@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netzwerk Neu A1 — شرح وملخص وكلمات وتدريبات الوحدة 1 و 2 بالعامية المصرية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- الهيدر الرئيسي -->
+  <header class="hero-header">
+    <div class="container">
+      <div class="hero-top">
+        <div>
+          <span class="brand-badge">🇩🇪 Netzwerk Neu A1 — Kursbuch (Kapitel 1 &amp; 2)</span>
+          <h1>شرح وملخص وكلمات وتدريبات أول وحدتين</h1>
+          <p class="hero-subtitle">
+            كل قواعد ومحادثات وأرقام وأبجدية الوحدة الأولى والتانية بالعامية المصرية، مع قاموس شامل لكل كلمات الوحدتين وتدريبات الكتاب التفاعلية والنطق الصوتي.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button class="icon-btn" id="themeToggle" type="button" title="تغيير المظهر">🌙 الوضع الليلي</button>
+          <button class="icon-btn" onclick="window.print()" type="button" title="طباعة أو حفظ PDF">🖨️ طباعة / PDF</button>
+        </div>
+      </div>
+
+      <div class="stats-strip" id="heroStats">
+        <div class="stat-pill">📖 الوحدات: <strong>Kapitel 1 &amp; 2 (ص 8–27)</strong></div>
+        <div class="stat-pill">🗂️ إجمالي الكلمات: <strong id="statTotalWords">0</strong></div>
+        <div class="stat-pill">✅ الكلمات المحفوظة: <strong id="statLearnedWords">0</strong></div>
+        <div class="stat-pill">📝 التدريبات التفاعلية: <strong id="statTotalExercises">0</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- شريط التنقل بالتبويبات -->
+  <div class="nav-wrapper">
+    <div class="container">
+      <nav class="tabs-nav" role="tablist" aria-label="أقسام المذاكرة">
+        <button class="tab-btn active" data-tab="summary" role="tab">⚡ الملخص السريع</button>
+        <button class="tab-btn" data-tab="unit1" role="tab">1️⃣ الوحدة الأولى (Guten Tag!)</button>
+        <button class="tab-btn" data-tab="unit2" role="tab">2️⃣ الوحدة التانية (Freunde &amp; Beruf)</button>
+        <button class="tab-btn" data-tab="vocab" role="tab">📚 قاموس الوحدتين الكامل</button>
+        <button class="tab-btn" data-tab="exercises" role="tab">✍️ تدريبات الوحدتين</button>
+        <button class="tab-btn" data-tab="practice" role="tab">🃏 بطاقات حفظ واختبار</button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="container">
+
+    <!-- 1. تبويب الملخص السريع -->
+    <section id="tab-summary" class="tab-panel active">
+      <div class="legend-bar">
+        <strong>🎨 دليل ألوان الأدوات (استراتيجية الكتاب ص 24):</strong>
+        <span class="art-badge art-der">der = مذكر (أزرق)</span>
+        <span class="art-badge art-das">das = محايد (أخضر)</span>
+        <span class="art-badge art-die">die = مؤنث (أحمر)</span>
+        <span class="art-badge art-pl">die (Pl.) = جمع (بنفسجي)</span>
+        <span class="art-badge art-verb">Verb = فعل</span>
+        <span>🔊 اضغط على زرار الصوت جنب أي كلمة ألماني عشان تسمع نطقها!</span>
+      </div>
+
+      <div id="summaryMount"></div>
+    </section>
+
+    <!-- 2. تبويب الوحدة الأولى -->
+    <section id="tab-unit1" class="tab-panel">
+      <div id="unit1Mount"></div>
+    </section>
+
+    <!-- 3. تبويب الوحدة التانية -->
+    <section id="tab-unit2" class="tab-panel">
+      <div id="unit2Mount"></div>
+    </section>
+
+    <!-- 4. تبويب القاموس الشامل -->
+    <section id="tab-vocab" class="tab-panel">
+      <div class="unit-banner">
+        <h2>📚 قاموس الوحدتين الكامل (ألماني ← عامية مصرية)</h2>
+        <p>كل كلمة وردت في الوحدة الأولى والتانية في صفحات الكتاب (ص 8–27) وملحق الكلمات الرسمي في آخر الكتاب (Alphabetische Wortliste ص 162–174) مع الأداة والجمع والنطق الصوتي.</p>
+      </div>
+
+      <div class="card">
+        <div class="vocab-controls">
+          <input type="search" id="vocabSearch" class="input-field" placeholder="🔍 ابحث بالألماني أو بالعامية المصرية (مثلاً: Arzt أو دكتور أو فوطة)..." />
+          <select id="vocabUnitFilter" aria-label="تصفية بالوحدة">
+            <option value="all">كل الوحدتين (1 و 2)</option>
+            <option value="1">الوحدة الأولى فقط (Kapitel 1)</option>
+            <option value="2">الوحدة التانية فقط (Kapitel 2)</option>
+          </select>
+          <select id="vocabCatFilter" aria-label="تصفية بالقسم">
+            <option value="all">كل الأقسام والمواضيع</option>
+          </select>
+          <select id="vocabArtFilter" aria-label="تصفية بالأداة">
+            <option value="all">كل الأنواع والأدوات</option>
+            <option value="der">مذكر (der)</option>
+            <option value="das">محايد (das)</option>
+            <option value="die">مؤنث (die)</option>
+            <option value="pl">جمع (die Pl.)</option>
+            <option value="verb">أفعال (Verben)</option>
+            <option value="other">تعبيرات وصفات وأرقام</option>
+          </select>
+        </div>
+
+        <div class="vocab-toggles">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="chip-toggle" id="coreOnlyToggle">⭐ كلمات امتحان Start Deutsch 1 الأساسية فقط</button>
+            <button type="button" class="chip-toggle" id="unlearnedToggle">📌 الكلمات اللي لسه محفظتهاش فقط</button>
+          </div>
+          <div id="vocabCountLabel" style="font-weight:700; color:var(--text-muted);"></div>
+        </div>
+
+        <div class="vocab-grid" id="vocabGrid"></div>
+      </div>
+    </section>
+
+    <!-- 5. تبويب التدريبات التفاعلية -->
+    <section id="tab-exercises" class="tab-panel">
+      <div class="unit-banner">
+        <h2>✍️ تدريبات الوحدتين التفاعلية (الكتاب + تدريبات إضافية)</h2>
+        <p>حل تدريبات الوحدة الأولى والتانية مباشرة هنا، اضغط "تحقق من إجابتك" عشان تعرف درجتك فوراً، أو اضغط "إظهار الحل والشرح" عشان تفهم سبب كل إجابة بالعامية المصرية.</p>
+      </div>
+
+      <div class="ex-filter-bar">
+        <button class="btn btn-primary ex-unit-btn" data-exunit="all">كل التدريبات</button>
+        <button class="btn btn-secondary ex-unit-btn" data-exunit="1">تدريبات الوحدة الأولى (1)</button>
+        <button class="btn btn-secondary ex-unit-btn" data-exunit="2">تدريبات الوحدة التانية (2)</button>
+      </div>
+
+      <div id="exercisesMount"></div>
+    </section>
+
+    <!-- 6. تبويب البطاقات والاختبار السريع -->
+    <section id="tab-practice" class="tab-panel">
+      <div class="grid-2">
+        <!-- Flashcards -->
+        <div class="card">
+          <div class="section-header">
+            <h3>🃏 بطاقات الحفظ (Flashcards)</h3>
+            <select id="fcUnitSelect" aria-label="اختر وحدة للبطاقات">
+              <option value="all">الوحدتين 1 و 2</option>
+              <option value="1">الوحدة 1 فقط</option>
+              <option value="2">الوحدة 2 فقط</option>
+              <option value="core">كلمات الامتحان الأساسية ⭐</option>
+            </select>
+          </div>
+          <p style="margin-top:0; color:var(--text-muted); font-size:0.92rem;">اضغط على الكارت عشان تقلبه وتشوف المعنى بالعامية المصرية!</p>
+
+          <div class="flashcard-stage">
+            <div class="flashcard" id="flashcardEl">
+              <div class="fc-face fc-front">
+                <div id="fcFrontBadge"></div>
+                <div class="fc-main-word" id="fcGerman">...</div>
+                <div id="fcPlural" style="color:var(--text-muted); font-family:'Plus Jakarta Sans',sans-serif;"></div>
+                <button type="button" class="btn btn-secondary" id="fcSpeakBtn" style="margin-top:6px;">🔊 اسمع النطق</button>
+              </div>
+              <div class="fc-face fc-back">
+                <div style="font-size:0.85rem; color:var(--primary); font-weight:800;">المعنى بالعامية المصرية</div>
+                <div style="font-size:1.55rem; font-weight:800;" id="fcEgyptian">...</div>
+                <div id="fcExample" style="font-size:0.92rem; color:var(--text-muted);"></div>
+                <div id="fcRef" style="font-size:0.8rem; color:var(--text-muted);"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:14px;">
+            <button type="button" class="btn btn-secondary" id="fcPrevBtn">⬅️ السابق</button>
+            <button type="button" class="btn btn-primary" id="fcFlipBtn">🔄 اقلب الكارت</button>
+            <button type="button" class="btn btn-secondary" id="fcNextBtn">التالي ➡️</button>
+            <button type="button" class="btn btn-secondary" id="fcShuffleBtn">🔀 لخبط الكروت</button>
+          </div>
+          <div id="fcCounter" style="text-align:center; margin-top:10px; font-weight:700; color:var(--text-muted);"></div>
+        </div>
+
+        <!-- Quick Quiz -->
+        <div class="card">
+          <div class="section-header">
+            <h3>🎯 اختبار سريع عشوائي (10 أسئلة)</h3>
+            <select id="quizTypeSelect" aria-label="نوع الاختبار">
+              <option value="mixed">شامل (معاني + أدوات)</option>
+              <option value="meaning">معاني الكلمات بالعامية</option>
+              <option value="article">اختبار الأدوات (der / das / die)</option>
+            </select>
+          </div>
+          <div id="quizArea"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      مبني بالكامل من كتاب <strong>Netzwerk Neu A1 — Kursbuch</strong> (الوحدة 1 و 2 + Alphabetische Wortliste) — بالعامية المصرية عشان تذاكر ألماني بمزاج 🇩🇪🇪🇬
+    </div>
+  </footer>
+
+  <script src="data-vocab.js"></script>
+  <script src="data-units.js"></script>
+  <script src="data-exercises.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

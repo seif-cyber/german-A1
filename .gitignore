@@ -1,0 +1,5 @@
+# Ignore large textbook PDF and local scratch/OS files
+*.pdf
+.DS_Store
+Thumbs.db
+desktop.ini
