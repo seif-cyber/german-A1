@@ -1122,6 +1122,15 @@ tr:hover td { background: rgba(200, 16, 46, 0.03); }
 }
 .flashcard.flipped { transform: rotateY(180deg); }
 
+.flashcard-stage.fc-enter {
+  animation: fcSlidePop 0.36s var(--ease-spring) both;
+}
+
+@keyframes fcSlidePop {
+  0% { opacity: 0; transform: translateX(-26px) scale(0.95); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
 .fc-face {
   position: absolute;
   inset: 0;

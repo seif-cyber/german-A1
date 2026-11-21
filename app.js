@@ -1545,8 +1545,10 @@ function submitExam() {
 // ==================== 7. البطاقات الذكية (عارفها ولا لأ؟) والاختبار السريع ====================
 let fcDeck = [];
 let fcIndex = 0;
+let fcAutoSpeak = true;
+let fcSpeakTimer = null;
 
-function loadFlashcards() {
+function loadFlashcards(animateAndSpeak = false) {
   const mode = document.getElementById("fcUnitSelect").value;
   if (mode === "unlearned") fcDeck = VOCAB_DATA.filter((w) => !learnedSet.has(getVocabKey(w)));
   else if (mode === "core_unlearned") fcDeck = VOCAB_DATA.filter((w) => w.core && !learnedSet.has(getVocabKey(w)));
@@ -1554,10 +1556,11 @@ function loadFlashcards() {
   else if (mode === "core") fcDeck = VOCAB_DATA.filter((w) => w.core);
   else fcDeck = VOCAB_DATA.filter((w) => String(w.unit) === mode);
   fcIndex = 0;
-  renderFlashcard();
+  renderFlashcard(animateAndSpeak);
 }
 
-function renderFlashcard() {
+function renderFlashcard(animateAndSpeak = false) {
+  if (fcSpeakTimer) { clearTimeout(fcSpeakTimer); fcSpeakTimer = null; }
   const emptyBox = document.getElementById("fcEmptyState");
   const activeWrap = document.getElementById("fcActiveWrap");
   if (!fcDeck.length) {
@@ -1570,6 +1573,7 @@ function renderFlashcard() {
   if (fcIndex >= fcDeck.length) fcIndex = 0;
 
   const card = document.getElementById("flashcardEl");
+  const stage = card.closest(".flashcard-stage");
   card.classList.remove("flipped");
   const item = fcDeck[fcIndex];
   const isLearned = learnedSet.has(getVocabKey(item));
@@ -1588,7 +1592,33 @@ function renderFlashcard() {
   document.getElementById("fcRef").textContent = `الوحدة ${item.unit} · ${item.category}`;
 
   const unlearnedTotal = VOCAB_DATA.length - learnedSet.size;
-  document.getElementById("fcCounter").textContent = `كارت ${fcIndex + 1} من ${fcDeck.length} · متبقي ${unlearnedTotal} كلمة غير محفوظة`;
+  document.getElementById("fcCounter").innerHTML = `
+    <span>كارت ${fcIndex + 1} من ${fcDeck.length} · متبقي ${unlearnedTotal} كلمة غير محفوظة</span>
+    <button type="button" id="fcAutoSpeakToggle" class="learn-btn ${fcAutoSpeak ? "done" : ""}" style="margin-right:8px;">
+      ${fcAutoSpeak ? "🔊 نطق تلقائي: شغّال" : "🔇 نطق تلقائي: مقفول"}
+    </button>
+  `;
+  const autoBtn = document.getElementById("fcAutoSpeakToggle");
+  if (autoBtn) {
+    autoBtn.addEventListener("click", () => {
+      fcAutoSpeak = !fcAutoSpeak;
+      renderFlashcard(false);
+    });
+  }
+
+  if (animateAndSpeak) {
+    if (stage) {
+      stage.classList.remove("fc-enter");
+      void stage.offsetWidth; // force reflow لإعادة تشغيل الأنيميشن بنعومة
+      stage.classList.add("fc-enter");
+    }
+    if (fcAutoSpeak) {
+      const spkBtn = document.getElementById("fcSpeakBtn");
+      fcSpeakTimer = setTimeout(() => {
+        speakGerman(getFullSpeakText(item), spkBtn);
+      }, 150);
+    }
+  }
 }
 
 function markFlashcardAnswer(knewIt) {
@@ -1612,7 +1642,6 @@ function markFlashcardAnswer(knewIt) {
     learnedSet.delete(key);
     saveLearned();
     renderVocabGrid();
-    // نرجّع الكلمة في آخر الدور (أو بعد 3 كروت) عشان تراجعها تاني لحد ما تحفظها!
     if (fcDeck.length > 1) {
       const [missed] = fcDeck.splice(fcIndex, 1);
       const reinsertAt = Math.min(fcIndex + 3, fcDeck.length);
@@ -1620,11 +1649,11 @@ function markFlashcardAnswer(knewIt) {
       if (fcIndex >= fcDeck.length) fcIndex = 0;
     }
   }
-  renderFlashcard();
+  renderFlashcard(true);
 }
 
 function initFlashcards() {
-  document.getElementById("fcUnitSelect").addEventListener("change", loadFlashcards);
+  document.getElementById("fcUnitSelect").addEventListener("change", () => loadFlashcards(true));
   document.getElementById("flashcardEl").addEventListener("click", (e) => {
     if (e.target.closest("#fcSpeakBtn")) return;
     document.getElementById("flashcardEl").classList.toggle("flipped");
@@ -1635,17 +1664,17 @@ function initFlashcards() {
   document.getElementById("fcNextBtn").addEventListener("click", () => {
     if (!fcDeck.length) return;
     fcIndex = (fcIndex + 1) % fcDeck.length;
-    renderFlashcard();
+    renderFlashcard(true);
   });
   document.getElementById("fcPrevBtn").addEventListener("click", () => {
     if (!fcDeck.length) return;
     fcIndex = (fcIndex - 1 + fcDeck.length) % fcDeck.length;
-    renderFlashcard();
+    renderFlashcard(true);
   });
   document.getElementById("fcShuffleBtn").addEventListener("click", () => {
     fcDeck.sort(() => Math.random() - 0.5);
     fcIndex = 0;
-    renderFlashcard();
+    renderFlashcard(true);
   });
   document.getElementById("fcSpeakBtn").addEventListener("click", (e) => {
     e.stopPropagation();
@@ -1656,9 +1685,9 @@ function initFlashcards() {
   document.getElementById("fcKnowNoBtn").addEventListener("click", () => markFlashcardAnswer(false));
   document.getElementById("fcReviewAllBtn").addEventListener("click", () => {
     document.getElementById("fcUnitSelect").value = "all";
-    loadFlashcards();
+    loadFlashcards(true);
   });
-  loadFlashcards();
+  loadFlashcards(false);
 }
 
 let quizQuestions = [];
