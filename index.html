@@ -36,7 +36,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Critical inline splash styles so mobile paints Splash Screen immediately on Frame 0 */
+    /* Full critical inline splash styles so mobile renders pixel-perfect on Frame 0 with zero jump */
     body.splash-lock { overflow: hidden; }
     #splashScreen {
       position: fixed;
@@ -51,14 +51,73 @@
       align-items: center;
       justify-content: center;
       color: #fff;
+      padding: 20px 16px 56px;
+      box-sizing: border-box;
       opacity: 1;
       visibility: visible;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s;
     }
     #splashScreen.hide {
       opacity: 0;
-      transform: scale(1.05);
+      transform: scale(1.04);
       visibility: hidden;
       pointer-events: none;
+    }
+    #splashScreen .splash-card {
+      text-align: center;
+      padding: 26px 22px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42);
+      width: min(92%, 390px);
+      box-sizing: border-box;
+    }
+    #splashScreen .splash-logo-svg {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      margin: 0 auto 12px;
+    }
+    #splashScreen .splash-subtitle {
+      margin: 4px 0 18px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 600;
+    }
+    #splashScreen .splash-progress-track {
+      width: 100%;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    #splashScreen .splash-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fbbf24, #fb7185, #fde047);
+      animation: splashBarFill 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes splashBarFill {
+      0% { width: 10%; }
+      65% { width: 82%; }
+      100% { width: 100%; }
+    }
+    #splashScreen .splash-credit {
+      position: absolute;
+      bottom: max(18px, env(safe-area-inset-bottom, 18px));
+      left: 18px;
+      direction: ltr;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.86);
+      letter-spacing: 0.01em;
     }
   </style>
 </head>
@@ -98,12 +157,12 @@
         </defs>
         <rect x="10" y="10" width="340" height="4" rx="2" fill="url(#nwStripe)" />
         <rect x="10" y="18" width="290" height="2.5" rx="1.25" fill="#fde047" opacity="0.85" />
-        <rect x="10" y="28" width="340" height="72" rx="14" fill="url(#nwRed)" />
-        <text x="180" y="75" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="38" font-weight="800" letter-spacing="-0.5">Netzwerk neu</text>
-        <rect x="10" y="108" width="340" height="36" rx="10" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
-        <text x="64" y="133" text-anchor="middle" fill="#fde047" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="22" font-weight="800">A1</text>
-        <line x1="100" y1="115" x2="100" y2="137" stroke="rgba(255,255,255,0.38)" stroke-width="2" />
-        <text x="225" y="131" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="14" font-weight="700">Kurs- &amp; Übungsbuch • Interactive Guide</text>
+        <rect x="10" y="28" width="340" height="70" rx="14" fill="url(#nwRed)" />
+        <text x="180" y="74" text-anchor="middle" fill="#ffffff" font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif" font-size="36" font-weight="800" letter-spacing="-0.5">Netzwerk neu</text>
+        <rect x="10" y="106" width="340" height="38" rx="10" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
+        <text x="56" y="132" text-anchor="middle" fill="#fde047" font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">A1</text>
+        <line x1="92" y1="114" x2="92" y2="136" stroke="rgba(255,255,255,0.38)" stroke-width="2" />
+        <text x="220" y="130" text-anchor="middle" fill="#ffffff" font-family="system-ui, -apple-system, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Kurs- &amp; Übungsbuch Guide</text>
       </svg>
       <div class="splash-subtitle">جاري تجهيز الشرح والصوت الألماني الأصلي والامتحانات...</div>
       <div class="splash-progress-track">
@@ -295,40 +354,57 @@
       <div class="grid-2">
         <div class="card">
           <div class="section-header">
-            <h3>🃏 بطاقات الحفظ (Flashcards)</h3>
-            <select id="fcUnitSelect" aria-label="اختر وحدة للبطاقات">
+            <h3>🃏 بطاقات الحفظ الذكية (Flashcards)</h3>
+            <select id="fcUnitSelect" aria-label="اختر مجموعة البطاقات">
+              <option value="unlearned" selected>📌 الكلمات اللي لسه محفظتهاش (الأهم)</option>
+              <option value="core_unlearned">⭐ كلمات الامتحان اللي لسه محفظتهاش</option>
               <option value="all">كل الوحدات المتاحة</option>
               <option value="1">الوحدة 1 فقط</option>
               <option value="2">الوحدة 2 فقط</option>
-              <option value="core">كلمات الامتحان الأساسية ⭐</option>
+              <option value="core">كل كلمات الامتحان الأساسية ⭐</option>
             </select>
           </div>
-          <p style="margin-top:0; color:var(--text-muted); font-size:0.92rem;">اضغط على الكارت عشان تقلبه وتشوف المعنى بالعامية المصرية!</p>
+          <p style="margin-top:0; color:var(--text-muted); font-size:0.9rem;">اضغط على الكارت عشان تقلبه وتختبر نفسك، وبعدين قولّي: <strong>عارف الكلمة دي ولا لسه؟</strong></p>
 
-          <div class="flashcard-stage">
-            <div class="flashcard" id="flashcardEl">
-              <div class="fc-face fc-front">
-                <div id="fcFrontBadge"></div>
-                <div class="fc-main-word" id="fcGerman">...</div>
-                <div id="fcPlural" style="color:var(--text-muted); font-family:'Plus Jakarta Sans',sans-serif;"></div>
-                <button type="button" class="btn btn-secondary" id="fcSpeakBtn" style="margin-top:6px;">🔊 اسمع النطق الأصلي</button>
-              </div>
-              <div class="fc-face fc-back">
-                <div style="font-size:0.85rem; color:var(--primary); font-weight:800;">المعنى بالعامية المصرية</div>
-                <div style="font-size:1.45rem; font-weight:800;" id="fcEgyptian">...</div>
-                <div id="fcExample" style="font-size:0.9rem; color:var(--text-muted);"></div>
-                <div id="fcRef" style="font-size:0.8rem; color:var(--text-muted);"></div>
+          <div id="fcEmptyState" class="callout info" style="text-align:center; padding:24px;" hidden>
+            <strong style="font-size:1.15rem;">🎉 برافو عليك! إنت حافظ كل الكلمات في القسم ده!</strong>
+            <p style="margin:8px 0 14px;">تقدر تراجع كل الكلمات من تاني أو تختبر نفسك في مركز الامتحانات.</p>
+            <button type="button" class="btn btn-primary" id="fcReviewAllBtn">🔄 راجع كل الكلمات</button>
+          </div>
+
+          <div id="fcActiveWrap">
+            <div class="flashcard-stage">
+              <div class="flashcard" id="flashcardEl">
+                <div class="fc-face fc-front">
+                  <div id="fcStatusPill" class="fc-status-pill"></div>
+                  <div id="fcFrontBadge"></div>
+                  <div class="fc-main-word" id="fcGerman">...</div>
+                  <div id="fcPlural" style="color:var(--text-muted); font-family:'Plus Jakarta Sans',sans-serif;"></div>
+                  <button type="button" class="btn btn-secondary" id="fcSpeakBtn" style="margin-top:6px;">🔊 اسمع النطق الأصلي</button>
+                </div>
+                <div class="fc-face fc-back">
+                  <div style="font-size:0.85rem; color:var(--primary); font-weight:800;">المعنى بالعامية المصرية</div>
+                  <div style="font-size:1.45rem; font-weight:800;" id="fcEgyptian">...</div>
+                  <div id="fcExample" style="font-size:0.9rem; color:var(--text-muted);"></div>
+                  <div id="fcRef" style="font-size:0.8rem; color:var(--text-muted);"></div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:14px;">
-            <button type="button" class="btn btn-secondary" id="fcPrevBtn">⬅️ السابق</button>
-            <button type="button" class="btn btn-primary" id="fcFlipBtn">🔄 اقلب الكارت</button>
-            <button type="button" class="btn btn-secondary" id="fcNextBtn">التالي ➡️</button>
-            <button type="button" class="btn btn-secondary" id="fcShuffleBtn">🔀 لخبط الكروت</button>
+            <!-- أزرار عارفها ولا لأ؟ -->
+            <div class="fc-know-bar">
+              <button type="button" class="btn fc-know-yes" id="fcKnowYesBtn">✅ عارفها (حفظتها!)</button>
+              <button type="button" class="btn fc-know-no" id="fcKnowNoBtn">🔁 لسه مش حافظها (أعدها)</button>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:10px;">
+              <button type="button" class="btn btn-secondary" id="fcPrevBtn">⬅️ السابق</button>
+              <button type="button" class="btn btn-primary" id="fcFlipBtn">🔄 اقلب الكارت</button>
+              <button type="button" class="btn btn-secondary" id="fcNextBtn">التالي ➡️</button>
+              <button type="button" class="btn btn-secondary" id="fcShuffleBtn">🔀 لخبط</button>
+            </div>
+            <div id="fcCounter" style="text-align:center; margin-top:10px; font-weight:700; color:var(--text-muted); font-size:0.9rem;"></div>
           </div>
-          <div id="fcCounter" style="text-align:center; margin-top:10px; font-weight:700; color:var(--text-muted);"></div>
         </div>
 
         <div class="card">

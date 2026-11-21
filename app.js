@@ -294,10 +294,10 @@ function initSplash() {
     splash.addEventListener("click", dismiss, { once: true });
   }, 500);
 
-  // نبدأ العدّاد بعد ما المتصفح يرسم الـ Splash Screen فعلياً على الشاشة
+  // نبدأ العدّاد بعد ما المتصفح يرسم الـ Splash Screen فعلياً — المدة ثانية ونص (1500ms)
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      setTimeout(dismiss, 1600);
+      setTimeout(dismiss, 1500);
     });
   });
 }
@@ -1542,13 +1542,15 @@ function submitExam() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// ==================== 7. البطاقات التفاعلية والاختبار السريع ====================
+// ==================== 7. البطاقات الذكية (عارفها ولا لأ؟) والاختبار السريع ====================
 let fcDeck = [];
 let fcIndex = 0;
 
 function loadFlashcards() {
   const mode = document.getElementById("fcUnitSelect").value;
-  if (mode === "all") fcDeck = [...VOCAB_DATA];
+  if (mode === "unlearned") fcDeck = VOCAB_DATA.filter((w) => !learnedSet.has(getVocabKey(w)));
+  else if (mode === "core_unlearned") fcDeck = VOCAB_DATA.filter((w) => w.core && !learnedSet.has(getVocabKey(w)));
+  else if (mode === "all") fcDeck = [...VOCAB_DATA];
   else if (mode === "core") fcDeck = VOCAB_DATA.filter((w) => w.core);
   else fcDeck = VOCAB_DATA.filter((w) => String(w.unit) === mode);
   fcIndex = 0;
@@ -1556,10 +1558,27 @@ function loadFlashcards() {
 }
 
 function renderFlashcard() {
+  const emptyBox = document.getElementById("fcEmptyState");
+  const activeWrap = document.getElementById("fcActiveWrap");
+  if (!fcDeck.length) {
+    if (emptyBox) emptyBox.hidden = false;
+    if (activeWrap) activeWrap.hidden = true;
+    return;
+  }
+  if (emptyBox) emptyBox.hidden = true;
+  if (activeWrap) activeWrap.hidden = false;
+  if (fcIndex >= fcDeck.length) fcIndex = 0;
+
   const card = document.getElementById("flashcardEl");
   card.classList.remove("flipped");
   const item = fcDeck[fcIndex];
-  if (!item) return;
+  const isLearned = learnedSet.has(getVocabKey(item));
+
+  const statusPill = document.getElementById("fcStatusPill");
+  if (statusPill) {
+    statusPill.textContent = isLearned ? "✅ محفوظة" : "📌 لسه بتتذاكر";
+    statusPill.className = `fc-status-pill ${isLearned ? "is-learned" : "is-new"}`;
+  }
 
   document.getElementById("fcFrontBadge").innerHTML = articleBadgeHtml(item.article, item.category);
   document.getElementById("fcGerman").textContent = item.german;
@@ -1567,7 +1586,41 @@ function renderFlashcard() {
   document.getElementById("fcEgyptian").textContent = item.egyptian;
   document.getElementById("fcExample").textContent = item.example || "";
   document.getElementById("fcRef").textContent = `الوحدة ${item.unit} · ${item.category}`;
-  document.getElementById("fcCounter").textContent = `كارت ${fcIndex + 1} من ${fcDeck.length}`;
+
+  const unlearnedTotal = VOCAB_DATA.length - learnedSet.size;
+  document.getElementById("fcCounter").textContent = `كارت ${fcIndex + 1} من ${fcDeck.length} · متبقي ${unlearnedTotal} كلمة غير محفوظة`;
+}
+
+function markFlashcardAnswer(knewIt) {
+  const item = fcDeck[fcIndex];
+  if (!item) return;
+  const key = getVocabKey(item);
+  const mode = document.getElementById("fcUnitSelect").value;
+
+  if (knewIt) {
+    learnedSet.add(key);
+    saveLearned();
+    renderVocabGrid();
+    if (mode === "unlearned" || mode === "core_unlearned") {
+      fcDeck.splice(fcIndex, 1);
+      if (fcDeck.length === 0) launchConfetti();
+      if (fcIndex >= fcDeck.length) fcIndex = 0;
+    } else {
+      fcIndex = (fcIndex + 1) % fcDeck.length;
+    }
+  } else {
+    learnedSet.delete(key);
+    saveLearned();
+    renderVocabGrid();
+    // نرجّع الكلمة في آخر الدور (أو بعد 3 كروت) عشان تراجعها تاني لحد ما تحفظها!
+    if (fcDeck.length > 1) {
+      const [missed] = fcDeck.splice(fcIndex, 1);
+      const reinsertAt = Math.min(fcIndex + 3, fcDeck.length);
+      fcDeck.splice(reinsertAt, 0, missed);
+      if (fcIndex >= fcDeck.length) fcIndex = 0;
+    }
+  }
+  renderFlashcard();
 }
 
 function initFlashcards() {
@@ -1580,10 +1633,12 @@ function initFlashcards() {
     document.getElementById("flashcardEl").classList.toggle("flipped");
   });
   document.getElementById("fcNextBtn").addEventListener("click", () => {
+    if (!fcDeck.length) return;
     fcIndex = (fcIndex + 1) % fcDeck.length;
     renderFlashcard();
   });
   document.getElementById("fcPrevBtn").addEventListener("click", () => {
+    if (!fcDeck.length) return;
     fcIndex = (fcIndex - 1 + fcDeck.length) % fcDeck.length;
     renderFlashcard();
   });
@@ -1596,6 +1651,12 @@ function initFlashcards() {
     e.stopPropagation();
     const item = fcDeck[fcIndex];
     if (item) speakGerman(getFullSpeakText(item), e.currentTarget);
+  });
+  document.getElementById("fcKnowYesBtn").addEventListener("click", () => markFlashcardAnswer(true));
+  document.getElementById("fcKnowNoBtn").addEventListener("click", () => markFlashcardAnswer(false));
+  document.getElementById("fcReviewAllBtn").addEventListener("click", () => {
+    document.getElementById("fcUnitSelect").value = "all";
+    loadFlashcards();
   });
   loadFlashcards();
 }
@@ -1711,6 +1772,7 @@ document.addEventListener("click", (e) => {
     else learnedSet.add(key);
     saveLearned();
     renderVocabGrid();
+    loadFlashcards();
   }
 });
 
