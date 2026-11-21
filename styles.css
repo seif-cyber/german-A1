@@ -128,6 +128,61 @@ body {
 
 .ltr-inline { font-family: inherit; font-weight: inherit; }
 
+.de-prompt-box {
+  direction: ltr;
+  text-align: left;
+  font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  font-size: 1.04rem;
+  font-weight: 800;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: 12px;
+  padding: 11px 15px;
+  margin: 8px 0 12px;
+  line-height: 1.65;
+  unicode-bidi: isolate;
+}
+
+.de-verb-hint {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-left: 6px;
+}
+
+.de-quote-chip {
+  display: inline-block;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-soft);
+  padding: 1px 9px;
+  border-radius: 7px;
+  margin: 0 3px;
+}
+
+.fill-line-ltr {
+  direction: ltr;
+  text-align: left;
+  line-height: 2.25;
+  font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.ar-hint {
+  display: inline-block;
+  direction: rtl;
+  unicode-bidi: isolate;
+  font-family: "Cairo", system-ui, sans-serif;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+
 .container {
   max-width: 1180px;
   margin: 0 auto;

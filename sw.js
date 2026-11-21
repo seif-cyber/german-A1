@@ -1,5 +1,5 @@
 // Service Worker لتثبيت التطبيق (PWA) والتشغيل السريع والأوفلاين
-const CACHE_NAME = "netzwerk-a1-v8";
+const CACHE_NAME = "netzwerk-a1-v9";
 const AUDIO_CACHE = "netzwerk-a1-audio-v1";
 
 const CORE_ASSETS = [

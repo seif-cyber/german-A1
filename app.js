@@ -12,13 +12,65 @@ function isLtrText(str) {
   return s.length > 0 && !/[\u0600-\u06FF]/.test(s);
 }
 
-// عزل أرقام التليفونات والتواريخ والمدى الرقمي داخل النصوص العربية حتى لا تنعكس في RTL
+// عزل أرقام التليفونات والتواريخ والاقتباسات الألمانية داخل النصوص العربية حتى لا تنعكس في RTL
 function formatBidiText(str) {
   const safe = escapeHtml(str);
   return safe
+    .replace(/„([^“]+)“/g, '<span class="de-quote-chip" dir="ltr">$1</span>')
     .replace(/(\+?\d{2,5}\s*[-–]\s*\d[\d\s-]*\d)/g, '<span class="de" dir="ltr">$1</span>')
     .replace(/(\b\d{2}\.\d{2}\.\d{4}\b)/g, '<span class="de" dir="ltr">$1</span>')
     .replace(/(\b\d+\s*[–-]\s*\d+\b)/g, '<span class="ltr-inline" dir="ltr">$1</span>');
+}
+
+// تنسيق سؤال الامتحان بحيث تظهر الجملة الألمانية في سطر LTR مستقل وعلامة الاستفهام مظبوطة 100%
+function formatExamPrompt(prompt, numPrefix = "") {
+  const s = String(prompt ?? "");
+  const numHtml = numPrefix ? `<span style="color:var(--primary);">${numPrefix}</span> ` : "";
+
+  // 1) نمط: نص عربي: „جملة ألماني“ (فعل اختياري)
+  const mEnd = s.match(/^(.+?):\s*„([^“]+)“\s*(\([^)]+\))?\s*$/);
+  if (mEnd) {
+    const ar = formatBidiText(mEnd[1].trim() + ":");
+    const de = escapeHtml(mEnd[2].trim());
+    const hint = mEnd[3] ? ` <span class="de-verb-hint">${escapeHtml(mEnd[3])}</span>` : "";
+    return `<div>${numHtml}${ar}</div><div class="de-prompt-box" dir="ltr">${de}${hint}</div>`;
+  }
+
+  // 2) نمط صح/غلط: نص عربي — جملة: „جملة ألماني“ صح ...؟
+  const mTF = s.match(/^(.+?)\s*—\s*جملة:\s*„([^“]+)“\s*(.+)$/);
+  if (mTF) {
+    const ar = formatBidiText(`${mTF[1].trim()} — ${mTF[3].trim()}`);
+    const de = escapeHtml(mTF[2].trim());
+    return `<div>${numHtml}${ar}</div><div class="de-prompt-box" dir="ltr">${de}</div>`;
+  }
+
+  // 3) نمط سؤال ألماني مباشر بعد الشرطة: من نفس النص — Woher kommt Sara? (سارة منين؟)
+  const mInlineQ = s.match(/^(.+?)\s*—\s*([A-Za-zÄÖÜäöüß][^(\u0600-\u06FF]*\?)\s*(\([^)]+\))?\s*$/);
+  if (mInlineQ) {
+    const ar = formatBidiText(`${mInlineQ[1].trim()}${mInlineQ[3] ? " " + mInlineQ[3].trim() : ""}:`);
+    const de = escapeHtml(mInlineQ[2].trim());
+    return `<div>${numHtml}${ar}</div><div class="de-prompt-box" dir="ltr">${de}</div>`;
+  }
+
+  // 4) نمط سؤال عن معنى جملة ألماني كاملة: إيه معنى „Was sind Sie von Beruf?“؟ أو صاحبك سألك „Liest du gern?“ ...
+  const mSent = s.match(/„([^“]*(?:\s|[?!])[^“]*)“/);
+  if (mSent && /[?!.]/.test(mSent[1])) {
+    const de = escapeHtml(mSent[1].trim());
+    const arOnly = s
+      .replace(`„${mSent[1]}“`, "الجملة دي")
+      .replace(/\s+/g, " ")
+      .trim();
+    return `<div>${numHtml}${formatBidiText(arOnly)}</div><div class="de-prompt-box" dir="ltr">${de}</div>`;
+  }
+
+  // أي سؤال تاني (مع عزل الكلمات الألمانية المفردة داخل „...“ بـ dir="ltr")
+  return `<div>${numHtml}${formatBidiText(s)}</div>`;
+}
+
+// عزل التلميحات العربية داخل جملة ألماني LTR في تمارين ملء الفراغات
+function formatLtrSegmentWithArHints(str) {
+  return escapeHtml(str)
+    .replace(/(\([^)]*[\u0600-\u06FF][^)]*\)|\[[^\]]*[\u0600-\u06FF][^\]]*\])/g, '<span class="ar-hint" dir="rtl">$1</span>');
 }
 
 function renderValueSpan(str) {
@@ -919,19 +971,19 @@ function renderExercises() {
     } else if (ex.type === "fill") {
       body = ex.items.map((it, idx) => {
         const allLtr = it.choices && it.choices.every(isLtrText);
+        const lineIsLtr = !/[\u0600-\u06FF]/.test(it.before);
         const control = it.choices
           ? `<select class="ex-select ${allLtr ? "de" : ""}" ${allLtr ? 'dir="ltr"' : ""} data-ex="${ex.id}" data-idx="${idx}">
               <option value="">-- اختار --</option>
               ${it.choices.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("")}
             </select>`
-          : `<input type="text" class="ex-input-inline" data-ex="${ex.id}" data-idx="${idx}" placeholder="اكتب هنا..." autocomplete="off" />`;
+          : `<input type="text" class="ex-input-inline" dir="ltr" data-ex="${ex.id}" data-idx="${idx}" placeholder="اكتب هنا..." autocomplete="off" />`;
+        const lineHtml = lineIsLtr
+          ? `<div class="fill-line-ltr" dir="ltr"><span>${formatLtrSegmentWithArHints(it.before)}</span>${control}<span>${formatLtrSegmentWithArHints(it.after)}</span></div>`
+          : `<div style="line-height:2.2;"><span>${formatBidiText(it.before)}</span>${control}<span>${formatBidiText(it.after)}</span></div>`;
         return `
           <div class="ex-item" data-ex="${ex.id}" data-idx="${idx}">
-            <div style="line-height:2.2;">
-              <span class="de">${escapeHtml(it.before)}</span>
-              ${control}
-              <span class="de">${escapeHtml(it.after)}</span>
-            </div>
+            ${lineHtml}
             <div class="ex-feedback" id="fb-${ex.id}-${idx}"></div>
           </div>
         `;
@@ -1382,7 +1434,9 @@ function startExam(examId) {
       ${sectionHeader}
       ${passageHtml}
       <div class="exam-q-card" id="eq-${idx}">
-        <div style="font-weight:800; margin-bottom:10px;">${idx + 1}. ${formatBidiText(q.prompt)}</div>
+        <div style="font-weight:800; margin-bottom:10px;">
+          ${formatExamPrompt(q.prompt, `${idx + 1}.`)}
+        </div>
         ${audioHtml}
         <div>
           ${q.options.map((opt) => `
@@ -1520,7 +1574,7 @@ function submitExam() {
           : shown.map((d) => `
             <div class="ex-item ${d.ok ? "correct" : "wrong"}">
               <div style="font-weight:800; margin-bottom:6px;">
-                ${d.ok ? "✅" : "❌"} سؤال ${d.idx + 1} (${d.q.section}): ${formatBidiText(d.q.prompt)}
+                ${formatExamPrompt(d.q.prompt, `${d.ok ? "✅" : "❌"} سؤال ${d.idx + 1} (${d.q.section}) —`)}
                 ${d.q.audioText ? speakBtnHtml(d.q.audioText) : ""}
               </div>
               <div style="font-size:0.9rem;">إجابتك: <strong>${renderValueSpan(d.userAns)}</strong> ${d.ok ? "" : `| الإجابة الصح: <strong style="color:var(--das-color);">${renderValueSpan(d.q.answer)}</strong>`}</div>
