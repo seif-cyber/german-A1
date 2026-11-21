@@ -1,5 +1,6 @@
-# Ignore large textbook PDF and local scratch/OS files
+# Ignore large textbook PDFs, local dev docs, and OS files
 *.pdf
+*.md
 .DS_Store
 Thumbs.db
 desktop.ini

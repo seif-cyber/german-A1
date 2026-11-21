@@ -1,4 +1,4 @@
-// تدريبات الوحدة الأولى والتانية التفاعلية — من كتاب Netzwerk Neu A1 Kursbuch (ص 8–26) + تدريبات إضافية
+// تدريبات الوحدة الأولى والتانية التفاعلية — من كتاب Netzwerk Neu A1 Kursbuch  + تدريبات إضافية
 // كل تمرين قابل للحل الفوري مع زرار تحقق + إظهار الحل + شرح بالعامية المصرية
 
 const EXERCISES_DATA = [
@@ -6,7 +6,7 @@ const EXERCISES_DATA = [
   {
     id: "u1-ex1a",
     unit: 1,
-    ref: "تمرين 1a — ص 8 و 9",
+    ref: "تمرين 1a",
     title: "Deutsch international (وصّل الكلمة الدولية بمقابلها الألماني)",
     instructions: "في أول صفحتين في الكتاب، وصّل كل كلمة دولية بالكلمة الألمانية الصحيحة بتاعتها:",
     type: "match",
@@ -29,7 +29,7 @@ const EXERCISES_DATA = [
   {
     id: "u1-ex4a",
     unit: 1,
-    ref: "تمرين 4a & 4c — ص 12",
+    ref: "تمرين 4a & 4c",
     title: "Woher kommen Sie? (توصيل الأسئلة وإكمال الأفعال)",
     instructions: "أول 3 جمل: اختار الإجابة الصح لأسئلة Selina Lang. وبعدها كمّل تصريف الأفعال (kommt / wohnt) في تمرين 4c:",
     type: "fill",
@@ -88,9 +88,9 @@ const EXERCISES_DATA = [
   {
     id: "u1-ex8a",
     unit: 1,
-    ref: "تمرين 8a & 8b — ص 14 و 15",
+    ref: "تمرين 8a & 8b",
     title: "Länder und Sprachen (الدول واللغات + قاعدة aus)",
-    instructions: "اقرأ نبذة الشخصيات من ص 14–15 واختار الإجابة الصح لكل جملة، وركز في الدول اللي بتاخد أداة مع aus!",
+    instructions: "اقرأ نبذة الشخصيات واختار الإجابة الصح لكل جملة، وركز في الدول اللي بتاخد أداة مع aus!",
     type: "fill",
     items: [
       {
@@ -154,9 +154,9 @@ const EXERCISES_DATA = [
   {
     id: "u1-ex10",
     unit: 1,
-    ref: "تمرين 10 — ص 16",
+    ref: "تمرين 10",
     title: "Die Netzwerk-WG (وصّل معلومات شخصيات الشقة)",
-    instructions: "وصّل بداية كل جملة بتكملتها الصحيحة من قصة الفيديو (ص 16):",
+    instructions: "وصّل بداية كل جملة بتكملتها الصحيحة من قصة الفيديو:",
     type: "match",
     items: [
       { prompt: "1. Max, Bea und Luca ...", answer: "wohnen in München.", explanation: "هم التلاتة (جمع) ساكنين في ميونخ ← wohnen in München." },
@@ -209,7 +209,7 @@ const EXERCISES_DATA = [
   {
     id: "u2-ex3a",
     unit: 2,
-    ref: "تمرين 3a & 3b — ص 20",
+    ref: "تمرين 3a & 3b",
     title: "Meine Hobbys, meine Freunde (بوستات Sophie ونهايات الأفعال)",
     instructions: "كمّل الأفعال الصحيحة في بوستات صوفي (3a) وبعدها كمّل تصريف الأفعال في الكومنتات (3b):",
     type: "fill",
@@ -230,7 +230,7 @@ const EXERCISES_DATA = [
   {
     id: "u2-ex6b",
     unit: 2,
-    ref: "تمرين 6b & 10b — ص 22 و 24",
+    ref: "تمرين 6b & 10b",
     title: "Artikel sortieren (صنّف الكلمات بالألوان: der / das / die)",
     instructions: "اختار الأداة الصح لكل كلمة من كلمات الشغل والقاموس (تذكر الألوان: der أزرق، das أخضر، die أحمر):",
     type: "article-sort",
@@ -257,9 +257,9 @@ const EXERCISES_DATA = [
   {
     id: "u2-ex7a",
     unit: 2,
-    ref: "تمرين 7a — ص 22",
+    ref: "تمرين 7a",
     title: "Mein Beruf (اقرأ النصوص وحدّد مهنة كل شخص)",
-    instructions: "من نصوص الكتاب ص 22 (A–D)، اختار المهنة المناسبة لكل وصف:",
+    instructions: "من نصوص المهن الأربعة (A–D)، اختار المهنة المناسبة لكل وصف:",
     type: "fill",
     items: [
       {
@@ -295,7 +295,7 @@ const EXERCISES_DATA = [
   {
     id: "u2-ex7b",
     unit: 2,
-    ref: "تمرين 7b — ص 22",
+    ref: "تمرين 7b",
     title: "Zahlen ab zwanzig (وصّل الأرقام المكتوبة بقيمتها)",
     instructions: "وصّل كل رقم مكتوب بالحروف من تمرين 7b في الكتاب بالرقم الصحيح بتاعه:",
     type: "match",
@@ -315,7 +315,7 @@ const EXERCISES_DATA = [
   {
     id: "u2-ex8a",
     unit: 2,
-    ref: "تمرين 8a & 8b — ص 23",
+    ref: "تمرين 8a & 8b",
     title: "Singular und Plural (اكتب أو اختار الجمع الصح)",
     instructions: "في الألماني مفيش نهاية جمع واحدة، فيه 5 نهايات أساسية! كمّل جمع الكلمات دي من تمرين 8a:",
     type: "fill",
@@ -331,7 +331,7 @@ const EXERCISES_DATA = [
   {
     id: "u2-ex12a",
     unit: 2,
-    ref: "تمرين 12a — ص 25",
+    ref: "تمرين 12a",
     title: "Persönliche Angaben (وصّل بيانات Jonathan Miller)",
     instructions: "وصّل كل خانة من خانات الاستمارة بالمعلومة المناسبة من تمرين 12a:",
     type: "match",
@@ -348,9 +348,9 @@ const EXERCISES_DATA = [
   {
     id: "u2-ex12b-form",
     unit: 2,
-    ref: "تمرين 12b — ص 25",
+    ref: "تمرين 12b",
     title: "Sportclub „Fit“ — Anmeldung (املى استمارة النادي بنفسك!)",
-    instructions: "دي الاستمارة الحقيقية من ص 25! اختار كورس من جدول النادي واملى بياناتك بالألماني وجرب تبعتها عشان تتأكد إنك مليت كل خانة صح:",
+    instructions: "دي الاستمارة الحقيقية بتاعة النادي! اختار كورس من جدول النادي واملى بياناتك بالألماني وجرب تبعتها عشان تتأكد إنك مليت كل خانة صح:",
     type: "club-form"
   },
   {

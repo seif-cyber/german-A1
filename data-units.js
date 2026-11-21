@@ -82,7 +82,7 @@ const UNITS_DATA = {
 
   unit1: {
     title: "الوحدة الأولى: Guten Tag!",
-    subtitle: "صفحات 8 – 17 من كتاب Netzwerk Neu A1",
+    subtitle: "Kapitel 1 — التحيات، التعارف، الدول واللغات، والأرقام",
     intro: "دي أول خطوة ليك في الألماني! هتتعلم فيها إزاي تسلّم على الناس (سواء صحابك أو حد رسمي)، تقدّم نفسك وغيرك، تسأل عامل إيه، تقول إنت منين وساكن فين وبتتكلم لغات إيه، وتعد من 0 لـ 20، وتقول رقم تليفونك وإيميلك وتستهجى اسمك بالحروف الألماني.",
     quickSummary: [
       { title: "التحية والوداع", points: [
@@ -109,7 +109,7 @@ const UNITS_DATA = {
     sections: [
       {
         id: "u1-international",
-        badge: "ص 8–9",
+        badge: "مدخل الوحدة",
         title: "1. كلمات ألماني عالمية (Deutsch international)",
         explanation: "الكتاب بيبدأ يكسّر الرهبة وبيوريك إنك أصلاً عارف كلمات ألماني منتشرة في لغات العالم زي Kindergarten و Autobahn. احفظ الـ 9 كلمات دول بالأداة بتاعتهم من دلوقتي:",
         type: "cards-grid",
@@ -127,7 +127,7 @@ const UNITS_DATA = {
       },
       {
         id: "u1-greetings",
-        badge: "ص 10–11",
+        badge: "تحيات وتعارف",
         title: "2. التحيات وتقديم نفسك: الودّي (du) ضد الرسمي (Sie)",
         explanation: "في الألماني فيه فرق مهم جداً بين الكلام مع صحابك أو حد قريب من سنك (بتستخدم du + الاسم الأول بس) وبين الكلام مع دكتورك أو مديرك أو حد غريب أكبر منك (بتستخدم Sie بحرف كبير + Herr/Frau واسم العيلة).",
         type: "comparison",
@@ -158,7 +158,7 @@ const UNITS_DATA = {
       },
       {
         id: "u1-origin",
-        badge: "ص 12 & 14–15",
+        badge: "دول ولغات",
         title: "3. البلد والسكن واللغات (Woher? Wo? Welche Sprachen?)",
         explanation: "عشان تتكلم عن نفسك أو غيرك، محتاج 3 أسئلة أساسية: إنت منين (Woher)، ساكن فين (Wo)، وبتتكلم لغات إيه (Welche Sprachen). خلي بالك من تريكة مهمة جداً في الدول!",
         type: "note-and-table",
@@ -177,21 +177,21 @@ const UNITS_DATA = {
       },
       {
         id: "u1-grammar",
-        badge: "ص 11–12 & 17",
+        badge: "القواعد",
         title: "4. قواعد الوحدة الأولى (Grammatik)",
         explanation: "قواعد الوحدة الأولى بسيطة بس هي أساس الألماني كله! أهم قاعدتين: مكان الفعل رقم (2) دايماً، وتصريف الأفعال حسب الضمير.",
         type: "grammar-u1"
       },
       {
         id: "u1-numbers-alpha",
-        badge: "ص 13",
+        badge: "الأرقام والأبجدية",
         title: "5. الأرقام 0–20 والأبجدية والإيميل وجمل الإنقاذ",
         explanation: "اضغط على أي رقم أو حرف عشان تسمع نطقه بالألماني! وفي آخر الجزء ده هتلاقي رموز الإيميل وجمل 'معلش قولها تاني بالراحة' اللي بتنقذك في أي محادثة.",
         type: "u1-numbers-alphabet"
       },
       {
         id: "u1-wg",
-        badge: "ص 16",
+        badge: "فيديو الشقة",
         title: "6. قصة الفيديو: Die Netzwerk-WG (الحلقات 1–3)",
         explanation: "في آخر كل وحدة فيه فيديو قصير عن شقة شباب في ميونخ (WG = سكن مشترك). في الوحدة الأولى بنتعرف على سكان الشقة:",
         type: "bullets",
@@ -208,7 +208,7 @@ const UNITS_DATA = {
 
   unit2: {
     title: "الوحدة التانية: Freunde, Kollegen und ich",
-    subtitle: "صفحات 18 – 27 من كتاب Netzwerk Neu A1",
+    subtitle: "Kapitel 2 — الهوايات، المواعيد، المهن، الأدوات، والجمع",
     intro: "في الوحدة التانية هنطلع خطوة لقدام! هنتكلم عن الهوايات وإيه اللي بتحب تعمله (gern)، أيام الأسبوع وتظبيط خروجات مع صحابك، المهن والشغل وأوقات الإجازة، الأرقام الكبيرة لحد المليار، وهنفهم سر الأدوات (der / das / die) والجمع وتصريف كل الضمائر والأفعال الشاذة، وكمان إزاي تملى استمارة ألماني!",
     quickSummary: [
       { title: "الهوايات والخروجات", points: [
@@ -235,7 +235,7 @@ const UNITS_DATA = {
     sections: [
       {
         id: "u2-hobbies",
-        badge: "ص 18–20",
+        badge: "الهوايات",
         title: "1. الهوايات (Hobbys) وإزاي تقول بحب أعمل إيه",
         explanation: "أسهل طريقة تقول بيها 'أنا بحب أعمل كذا' في الألماني إنك تجيب الفعل وتزود جنبه كلمة gern! مثلاً: Ich schwimme (أنا بعوم) ← Ich schwimme gern (أنا بحب العوم).",
         type: "cards-grid",
@@ -254,20 +254,20 @@ const UNITS_DATA = {
       },
       {
         id: "u2-days-plans",
-        badge: "ص 21",
+        badge: "المواعيد والأيام",
         title: "2. أيام الأسبوع والخروجات ونغمة الجملة (Satzmelodie)",
         explanation: "لما تيجي تظبّط خروجة مع صاحبك، كل أيام الأسبوع مذكر (der) ولما نقول 'يوم كذا' بنحط قبلها am. وكمان كل أماكن الخروج في الدرس ده محايد (das) فـ (in + das) بتختصر وتبقى ins!",
         type: "u2-days-plans"
       },
       {
         id: "u2-jobs",
-        badge: "ص 22–23",
+        badge: "الشغل والمهن",
         title: "3. الشغل والمهن وأوقات العمل (Mein Beruf)",
         explanation: "في الألماني لما تقول مهنتك بعد sein مبتحطش أداة نكرة (بتقول Ich bin Student مش ein Student). ولتحويل أغلب المهن من مذكر لمؤنث بنضيف -in في الآخر (ولو فيها a/o/u أحياناً تاخد أوملاوت زي der Arzt ← die Ärztin).",
         type: "note-and-table",
         callout: {
           type: "info",
-          title: "أهم أسئلة الشغل والإجازات (Redemittel ص 23 و 27)",
+          title: "أهم أسئلة الشغل والإجازات (Redemittel)",
           text: "• Was sind Sie von Beruf? / Was bist du von Beruf? ← حضرتك/إنت شغال إيه؟\n• Ich bin Studentin / Ingenieur / Arzt / Informatiker. ← أنا طالبة / مهندس / دكتور / مبرمج.\n• Wann arbeiten Sie? / Wann arbeitest du? ← بتشتغل إمتى؟ ← Ich arbeite am Montag / von Montag bis Freitag.\n• Wann haben Sie frei? / Wann hast du frei? ← إجازتك إمتى؟ ← Ich habe am Freitag frei. / Ich arbeite am Freitag nicht."
         },
         headers: ["المهنة (مذكر der)", "المهنة (مؤنث die)", "المعنى بالعامية المصرية"],
@@ -287,25 +287,25 @@ const UNITS_DATA = {
       },
       {
         id: "u2-grammar",
-        badge: "ص 20–24 & 27",
+        badge: "القواعد والأدوات",
         title: "4. قواعد الوحدة التانية: الأفعال + الأدوات بالألوان + الجمع",
         explanation: "دي أهم صفحة قواعد في أول وحدتين: هنكمل كل الضمائر (بما فيها wir و ihr)، الأفعال الشاذة اللي الحرف المتحرك فيها بيتغير، فعلي sein و haben كاملين، سؤال هل (Ja-/Nein-Frage)، سر حفظ الأدوات بالألوان، والـ 5 نهايات للجمع!",
         type: "grammar-u2"
       },
       {
         id: "u2-numbers-big",
-        badge: "ص 22 & 27",
+        badge: "الأرقام الكبيرة",
         title: "5. الأرقام من 20 لحد المليار + المحوّل التفاعلي",
         explanation: "في الألماني من أول 21 لحد 99 بننطق الآحاد الأول وبعدين und وبعدين العشرات! زي العربي بالظبط ('خمسة وأربعين' = fünfundvierzig)! جرب تكتب أي رقم تحت وهتشوفه وتسمعه بالألماني فوراً.",
         type: "u2-numbers-converter"
       },
       {
         id: "u2-form",
-        badge: "ص 25",
+        badge: "الاستمارة",
         title: "6. ملء استمارة ألماني (Neu im Club — Formular ausfüllen)",
         explanation: "لما تسجّل في نادي أو كورس أو أي مكان في ألمانيا، دي أهم الخانات اللي هتقابلك في أي استمارة (Formular):",
         type: "note-and-table",
-        headers: ["الخانة في الاستمارة", "المعنى بالعامية", "مثال حقيقي (من الكتاب ص 25)"],
+        headers: ["الخانة في الاستمارة", "المعنى بالعامية", "مثال حقيقي (مثال تطبيقي)"],
         rows: [
           ["Vorname", "الاسم الأول", "Jonathan"],
           ["Nachname / Familienname", "اسم العيلة / اللقب", "Miller"],
@@ -320,7 +320,7 @@ const UNITS_DATA = {
       },
       {
         id: "u2-wg",
-        badge: "ص 26",
+        badge: "فيديو الشقة",
         title: "7. قصة الفيديو: Die Netzwerk-WG (الحلقات 4–5)",
         explanation: "تكملة قصة شباب الشقة في ميونخ في الوحدة التانية:",
         type: "bullets",

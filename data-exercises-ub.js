@@ -1,13 +1,13 @@
-// كل تمارين الوحدة الأولى والتانية من كتاب التمارين (Netzwerk Neu A1 — Übungsbuch ص 6–29)
+// كل تمارين الوحدة الأولى والتانية من كتاب التمارين (Netzwerk Neu A1 — Übungsbuch)
 // مصممة بشكل تفاعلي كامل مع تصحيح فوري وشرح كل إجابة بالعامية المصرية
 
 const UB_EXERCISES_DATA = [
-  // ==================== Übungsbuch Kapitel 1 (ص 6–17) ====================
+  // ==================== Übungsbuch Kapitel 1  ====================
   {
     id: "ub1-ex1",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 1 — ص 6",
+    ref: "ÜB تمرين 1",
     title: "Deutsch international (اكتب الكلمات السبع من الحروف المفقودة)",
     instructions: "في أول صفحة في كتاب التمارين، كمّل الـ 7 كلمات ألماني دولية بناءً على الأداة والمعنى والحرف المساعد:",
     type: "fill",
@@ -25,7 +25,7 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex2a-2b",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 2a & 2b — ص 6",
+    ref: "ÜB تمرين 2a & 2b",
     title: "Hallo! Tschüs! (إكمال المحادثات + ترتيب حوارين)",
     instructions: "كمّل المحادثات الثلاث (2a) وبعدها اختار الترتيب الصحيح لجمل Dialog 1 و Dialog 2 (2b):",
     type: "fill",
@@ -42,9 +42,9 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex3a",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 3a — ص 7",
+    ref: "ÜB تمرين 3a",
     title: "Guten Tag! Auf Wiedersehen! (اختار التحية المناسبة لكل موقف)",
-    instructions: "من صور تمرين 3a ص 7، اختار التحية أو الوداع المناسب لكل موقف:",
+    instructions: "من صور تمرين 3a، اختار التحية أو الوداع المناسب لكل موقف:",
     type: "match",
     items: [
       { prompt: "1. الصبح بدري والمدرس داخل الفصل والشمس لسه طالعة", answer: "Guten Morgen!", explanation: "الصبح = Guten Morgen!" },
@@ -60,7 +60,7 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex3d-3e",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 3d & 3e — ص 8",
+    ref: "ÜB تمرين 3d & 3e",
     title: "Sie oder du? (ودّي ولا رسمي؟ + إكمال الحوارات)",
     instructions: "كمّل الفراغات بـ Sie أو du في تمرين 3d، وبعدها كمّل الأفعال والأسماء في تمرين 3e:",
     type: "fill",
@@ -81,9 +81,9 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex4a-4c",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 4a, 4b & 4c — ص 9",
+    ref: "ÜB تمرين 4a, 4b & 4c",
     title: "Woher kommen Sie? (توصيل + أدوات الاستفهام + الضمائر)",
-    instructions: "حل أهم 3 تمارين في ص 9 من كتاب التمارين (ركز على الفرق بين Und Sie? و Und du?):",
+    instructions: "حل أهم 3 تمارين من كتاب التمارين (ركز على الفرق بين Und Sie? و Und du?):",
     type: "fill",
     items: [
       { before: "4a-1) Wie heißen Sie? → ", after: "", answer: "Mein Name ist Victoria Kunze.", choices: ["Mein Name ist Victoria Kunze.", "Aus Irland. Und Sie?", "In Stuttgart. Und Sie?", "Englisch und Deutsch."], explanation: "سؤال رسمي عن الاسم ← Mein Name ist Victoria Kunze." },
@@ -101,9 +101,9 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex4d-table",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 4d — ص 9",
+    ref: "ÜB تمرين 4d",
     title: "جدول تصريف الأفعال التفاعلي (heißen / wohnen / kommen / sein)",
-    instructions: "كمّل كل الخانات الفاضية في جدول تصريف أفعال الوحدة الأولى (ص 9 في الـ ÜB):",
+    instructions: "كمّل كل الخانات الفاضية في جدول تصريف أفعال الوحدة الأولى (كتاب التمارين):",
     type: "verb-table",
     headers: ["الضمير", "heißen", "wohnen", "kommen", "sein"],
     rows: [
@@ -117,9 +117,9 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex4e-5d",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 4e & 5d — ص 10",
+    ref: "ÜB تمرين 4e & 5d",
     title: "اختار وكمّل الشكل الصح للفعل (تطبيق مباشر)",
-    instructions: "اختار التصريف الصح للفعل في كل جملة من ص 10:",
+    instructions: "اختار التصريف الصح للفعل في كل جملة :",
     type: "fill",
     items: [
       { before: "4e-1) Ich heiße Pia und ich ", after: " aus Hamburg.", answer: "komme", choices: ["kommt", "komme", "kommen"], explanation: "مع ich ← komme" },
@@ -136,9 +136,9 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex5f",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 5f — ص 11",
+    ref: "ÜB تمرين 5f",
     title: "Lesen Sie den Chat (اقرأ شات Aylin و Sarah و Nils واستخرج البيانات)",
-    instructions: "اقرأ الشات ده من ص 11 في الـ ÜB:\n• Aylin: „Hallo! Mein Name ist Aylin. Ich komme aus Berlin. Und ich wohne in Stuttgart!“\n• Sarah: „Ich heiße Sarah. Ich wohne in Berlin! Ich komme aus Frankfurt.“\n• Nils: „Ich bin Nils! Ich komme aus Stuttgart. Ich wohne in Frankfurt.“\nدلوقتي اختار Wo? (ساكن فين) و Woher? (أصله منين) لكل واحد:",
+    instructions: "اقرأ الشات ده من كتاب التمارين:\n• Aylin: „Hallo! Mein Name ist Aylin. Ich komme aus Berlin. Und ich wohne in Stuttgart!“\n• Sarah: „Ich heiße Sarah. Ich wohne in Berlin! Ich komme aus Frankfurt.“\n• Nils: „Ich bin Nils! Ich komme aus Stuttgart. Ich wohne in Frankfurt.“\nدلوقتي اختار Wo? (ساكن فين) و Woher? (أصله منين) لكل واحد:",
     type: "fill",
     items: [
       { before: "Aylin — Wo? (ساكنة فين): in ", after: "", answer: "Stuttgart", choices: ["Berlin", "Frankfurt", "Stuttgart"], explanation: "Aylin قالت: Und ich wohne in Stuttgart!" },
@@ -153,9 +153,9 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex5e-7c",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 5e & 7c — ص 11 و 13",
+    ref: "ÜB تمرين 5e & 7c",
     title: "رتّب الجمل (Aussagesatz / W-Frage / Wie bitte?)",
-    instructions: "اضغط على الكلمات بالترتيب الصح (من تمرين 5e ص 11 وتمرين 7c ص 13):",
+    instructions: "اضغط على الكلمات بالترتيب الصح (تمرين 5e & 7c):",
     type: "word-order",
     sentences: [
       { hint: "5e-4: أنا من موسكو.", words: ["Ich", "komme", "aus", "Moskau."], explanation: "الفاعل رقم 1 + الفعل (komme) رقم 2." },
@@ -170,9 +170,9 @@ const UB_EXERCISES_DATA = [
     id: "ub1-ex8a-8c",
     source: "ub",
     unit: 1,
-    ref: "ÜB تمرين 8a, 8b, 8c & ص 17",
+    ref: "ÜB تمرين 8a, 8b, 8c & المراجعة",
     title: "Länder, Sprachen & قاعدة aus der / aus dem / aus den",
-    instructions: "توصيل رموز الدول، اللغات، وقاعدة aus المهمة جداً (شاملة العراق وإيران ولبنان واليمن!) + الساعات الرقمية من ص 17:",
+    instructions: "توصيل رموز الدول، اللغات، وقاعدة aus المهمة جداً (شاملة العراق وإيران ولبنان واليمن!) + الساعات الرقمية:",
     type: "fill",
     items: [
       { before: "8a) رمز الدولة CH يخص دولة: ", after: "", answer: "die Schweiz", choices: ["Deutschland", "Österreich", "die Schweiz", "Polen"], explanation: "CH = Confoederatio Helvetica = سويسرا (die Schweiz)." },
@@ -183,20 +183,20 @@ const UB_EXERCISES_DATA = [
       { before: "8c-2) Deutschland / Spanien / Ägypten / Syrien → بنقول: ", after: "", answer: "Aus ...", choices: ["Aus ...", "Aus der ...", "Aus dem ...", "Aus den ..."], explanation: "دول بدون أداة ← aus مباشرة!" },
       { before: "8c-3) Irak / Iran / Libanon / Jemen → بنقول: ", after: "", answer: "Aus dem ...", choices: ["Aus ...", "Aus der ...", "Aus dem ...", "Aus den ..."], explanation: "دول مذكرة (der) ← مع aus تبقى aus dem! (خلي بالك منها في الامتحانات!)" },
       { before: "8c-4) USA / Niederlanden → بنقول: ", after: "", answer: "Aus den ...", choices: ["Aus ...", "Aus der ...", "Aus dem ...", "Aus den ..."], explanation: "دول جمع (die Pl.) ← مع aus تبقى aus den!" },
-      { before: "ص 17) الساعة 13:20 الظهر ← نقول: ", after: "", answer: "Guten Tag!", choices: ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Gute Nacht!"], explanation: "الساعة 1:20 الظهر ← Guten Tag!" },
-      { before: "ص 17) الساعة 19:30 بالليل ← نقول: ", after: "", answer: "Guten Abend!", choices: ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Gute Nacht!"], explanation: "الساعة 7:30 مساءً ← Guten Abend!" },
-      { before: "ص 17) الساعة 23:40 وقت النوم ← نقول: ", after: "", answer: "Gute Nacht!", choices: ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Gute Nacht!"], explanation: "الساعة 11:40 قبل النوم ← Gute Nacht!" }
+      { before: "مراجعة) الساعة 13:20 الظهر ← نقول: ", after: "", answer: "Guten Tag!", choices: ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Gute Nacht!"], explanation: "الساعة 1:20 الظهر ← Guten Tag!" },
+      { before: "مراجعة) الساعة 19:30 بالليل ← نقول: ", after: "", answer: "Guten Abend!", choices: ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Gute Nacht!"], explanation: "الساعة 7:30 مساءً ← Guten Abend!" },
+      { before: "مراجعة) الساعة 23:40 وقت النوم ← نقول: ", after: "", answer: "Gute Nacht!", choices: ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Gute Nacht!"], explanation: "الساعة 11:40 قبل النوم ← Gute Nacht!" }
     ]
   },
 
-  // ==================== Übungsbuch Kapitel 2 (ص 18–29) ====================
+  // ==================== Übungsbuch Kapitel 2  ====================
   {
     id: "ub2-ex2a-3a",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 2a & 3a — ص 18 و 19",
+    ref: "ÜB تمرين 2a & 3a",
     title: "Hobbys (إكمال أسئلة الهوايات وتوصيل الجمل)",
-    instructions: "كمّل الأفعال في أسئلة الهوايات (2a ص 18) ووصّل جمل صوفي وصحابها (3a ص 19):",
+    instructions: "كمّل الأفعال في أسئلة الهوايات (2a) ووصّل جمل صوفي وصحابها (3a):",
     type: "fill",
     items: [
       { before: "2a-2) Schwimmen Sie gern? — Ja, ich ", after: " gern.", answer: "schwimme", accepted: ["schwimme"], explanation: "مع ich ← schwimme." },
@@ -214,9 +214,9 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex3c-3f",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 3c, 3d & 3f — ص 19 و 20",
+    ref: "ÜB تمرين 3c, 3d & 3f",
     title: "تصريف الأفعال ونهاياتها (المنتظم + الشاذ + ihr)",
-    instructions: "تمارين مكثفة من ص 19–20 في الـ ÜB لتثبيت كل الضمائر (ich, du, er/es/sie, wir, ihr, sie/Sie):",
+    instructions: "تمارين مكثفة لتثبيت كل الضمائر (ich, du, er/es/sie, wir, ihr, sie/Sie):",
     type: "fill",
     items: [
       { before: "3c-2) Tom ", after: " nicht gern.", answer: "kocht", choices: ["kocht", "kochen"], explanation: "Tom = er ← kocht" },
@@ -235,9 +235,9 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex3e-table",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 3e — ص 20",
+    ref: "ÜB تمرين 3e",
     title: "جدول تصريف أفعال الوحدة التانية الكامل (spielen / arbeiten / lesen / sprechen)",
-    instructions: "كمّل كل الخانات الفاضية في جدول ص 20 (خلي بالك من الـ e في arbeiten والتغيير في lesen و sprechen مع du و er/es/sie بس!):",
+    instructions: "كمّل كل الخانات الفاضية في جدول التصريف (خلي بالك من الـ e في arbeiten والتغيير في lesen و sprechen مع du و er/es/sie بس!):",
     type: "verb-table",
     headers: ["الضمير", "spielen", "arbeiten", "lesen", "sprechen"],
     rows: [
@@ -253,9 +253,9 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex3g-5d",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 3g & 5d — ص 20 و 22",
+    ref: "ÜB تمرين 3g & 5d",
     title: "بناء الجمل وأسئلة هل (Aussagesätze & Ja-/Nein-Fragen)",
-    instructions: "رتّب الكلمات عشان تكوّن جمل خبرية صح (3g ص 20) وأسئلة بهل تبدأ بالفعل (5d ص 22):",
+    instructions: "رتّب الكلمات عشان تكوّن جمل خبرية صح (3g) وأسئلة بهل تبدأ بالفعل (5d):",
     type: "word-order",
     sentences: [
       { hint: "3g-2: إيفا مبتحبش القراية أوي.", words: ["Eva", "liest", "nicht", "so", "gern."], explanation: "Eva + liest (رقم 2) + nicht so gern." },
@@ -270,9 +270,9 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex5c-dialogs",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 5c — ص 22",
+    ref: "ÜB تمرين 5c",
     title: "Ordnen Sie die Dialoge (رتّب خطوات محادثة تظبيط المواعيد)",
-    instructions: "اضغط على جمل المحادثة بالترتيب المنطقي من البداية للنهاية (Dialog A & Dialog B ص 22):",
+    instructions: "اضغط على جمل المحادثة بالترتيب المنطقي من البداية للنهاية (Dialog A & Dialog B):",
     type: "dialog-order",
     dialogs: [
       {
@@ -303,7 +303,7 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex6-7a-11a",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 6, 7a & 11a — ص 22 و 25",
+    ref: "ÜB تمرين 6, 7a & 11a",
     title: "تحدي الأدوات الكبير من الـ ÜB (der / das / die بالألوان)",
     instructions: "كل الكلمات المهمة من تمارين 6 و 7a و 11a في الـ ÜB — اختار الأداة الصح لكل كلمة:",
     type: "article-sort",
@@ -331,9 +331,9 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex7f",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 7f — ص 23",
+    ref: "ÜB تمرين 7f",
     title: "فهم النصوص وتصحيح الأخطاء (Amina, Leon, Fabian, Magda)",
-    instructions: "مراجعة على النصوص الأربعة في ص 22 من الـ Kursbuch عبر أسئلة الفهم والتصحيح في ص 23 من الـ Übungsbuch:",
+    instructions: "مراجعة على النصوص الأربعة من الـ Kursbuch عبر أسئلة الفهم والتصحيح في الـ Übungsbuch:",
     type: "fill",
     items: [
       { before: "Text A) Amina Mazin arbeitet am Samstag ", after: "", answer: "im Kino.", choices: ["im Kino.", "am Nachmittag.", "sehr groß.", "Studentin."], explanation: "يوم السبت أمينة بتشتغل في السينما (im Kino)." },
@@ -347,8 +347,8 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex8a-8b",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 8a & 8b — ص 24",
-    title: "تحدي الجمع الكامل (Pluralformen — ص 24)",
+    ref: "ÜB تمرين 8a & 8b",
+    title: "تحدي الجمع الكامل (Pluralformen)",
     instructions: "اكتب أو اختار صيغة الجمع الصحيحة لكل اسم (لاحظ الأداة في الجمع دايماً die):",
     type: "fill",
     items: [
@@ -368,7 +368,7 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex9c-9e",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 9c, 9d & 9e — ص 25",
+    ref: "ÜB تمرين 9c, 9d & 9e",
     title: "تأنيث المهن + تدريبات sein و haben و arbeiten",
     instructions: "كمّل تأنيث وتذكير المهن (9c) واختار التصريف الصح لـ sein و haben و arbeiten (9d & 9e):",
     type: "fill",
@@ -389,9 +389,9 @@ const UB_EXERCISES_DATA = [
     id: "ub2-ex12b-r3",
     source: "ub",
     unit: 2,
-    ref: "ÜB تمرين 12b & R3 — ص 26 و 27",
+    ref: "ÜB تمرين 12b & R3",
     title: "استمارة Tobias Gruber + مراجعة أسئلة الشغل (R3)",
-    instructions: "اقرأ النص من ص 26:\n„Tobias Gruber ist am 7. Dezember 1990 in Berlin geboren. Er wohnt schon drei Jahre in Wien. Er ist Informatiker und arbeitet in einem Krankenhaus.“\nكمّل الاستمارة ووصّل أسئلة R3:",
+    instructions: "اقرأ النص ده:\n„Tobias Gruber ist am 7. Dezember 1990 in Berlin geboren. Er wohnt schon drei Jahre in Wien. Er ist Informatiker und arbeitet in einem Krankenhaus.“\nكمّل الاستمارة ووصّل أسئلة R3:",
     type: "fill",
     items: [
       { before: "12b) Vorname (الاسم الأول): ", after: "", answer: "Tobias", accepted: ["Tobias"], explanation: "الاسم الأول هو Tobias." },

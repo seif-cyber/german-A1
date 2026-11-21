@@ -439,7 +439,7 @@ function renderU1NumbersAlphabet() {
 
     <div class="grid-2" style="margin-top:16px;">
       <div class="compare-box">
-        <h4>📧 إزاي تقول عنوان الإيميل بالألماني (ص 13)</h4>
+        <h4>📧 إزاي تقول عنوان الإيميل بالألماني</h4>
         <div class="phrase-row"><div><span class="de">@</span> ← <span class="de hl-red">ät</span></div><span>آت</span></div>
         <div class="phrase-row"><div><span class="de">.</span> ← <span class="de hl-red">Punkt</span></div><span>نقطة (دوت)</span></div>
         <div class="phrase-row"><div><span class="de">-</span> ← <span class="de hl-red">minus</span></div><span>شرطة / داش</span></div>
@@ -507,7 +507,7 @@ function renderU2DaysPlans() {
 
     <div class="grid-2" style="margin-top:16px;">
       <div class="compare-box">
-        <h4>💬 محادثة تظبيط خروجة (ص 21)</h4>
+        <h4>💬 محادثة تظبيط خروجة</h4>
         <div class="phrase-row"><div><span class="de">Gehen wir ins Kino? ↗</span><div class="eg">نروح السينما؟</div></div>${speakBtnHtml("Gehen wir ins Kino?")}</div>
         <div class="phrase-row"><div><span class="de">Ja, gern. Wann? ↘</span><div class="eg">أيوة بكل سرور. إمتى؟</div></div>${speakBtnHtml("Ja, gern. Wann?")}</div>
         <div class="phrase-row"><div><span class="de">Am Samstag? ↗</span><div class="eg">يوم السبت؟</div></div>${speakBtnHtml("Am Samstag?")}</div>
@@ -519,7 +519,7 @@ function renderU2DaysPlans() {
         <p style="margin-top:0;">• في <strong>سؤال هل (Ja-/Nein-Frage)</strong> صوتك بيعلى في آخر السؤال <strong>↗</strong>: <span class="de">Gehen wir am Sonntag? ↗</span></p>
         <p>• في <strong>سؤال أداة الاستفهام (W-Frage)</strong> و<strong>الإجابة</strong> صوتك بينزل في الآخر <strong>↘</strong>: <span class="de">Wann gehen wir? ↘ — Am Montag. ↘</span></p>
         <div class="callout warning" style="margin-bottom:0;">
-          <strong>🗣️ Gut gesagt (ص 21): إزاي الألمان بيقولوا "لأ" في الشارع؟</strong>
+          <strong>🗣️ Gut gesagt: إزاي الألمان بيقولوا "لأ" في الشارع؟</strong>
           بدل <span class="de">nein</span> الرسمية، الألمان في الكلام اليومي بيقولوا كتير <span class="de">nee</span> أو <span class="de">nö</span>، وفي بافاريا والنمسا بيقولوا <span class="de">na</span>!
         </div>
       </div>
@@ -567,7 +567,7 @@ function renderGrammarU2() {
       </div>
       <div class="compare-box">
         <h4>📌 3. أدوات التعريف (bestimmter Artikel) بالألوان</h4>
-        <p style="margin-top:0;">احفظ كل اسم دايماً بأداته ولونه (استراتيجية الكتاب ص 24):</p>
+        <p style="margin-top:0;">احفظ كل اسم دايماً بأداته ولونه (استراتيجية حفظ الأدوات بالألوان):</p>
         <div class="phrase-row"><span class="art-badge art-der">der (maskulin — أزرق)</span><span class="de">der Stift, der Computer, der Schlüssel</span></div>
         <div class="phrase-row"><span class="art-badge art-das">das (neutrum — أخضر)</span><span class="de">das Buch, das Auto, das Krankenhaus</span></div>
         <div class="phrase-row"><span class="art-badge art-die">die (feminin — أحمر)</span><span class="de">die Tablette, die Straße, die Rechnung</span></div>
@@ -575,7 +575,7 @@ function renderGrammarU2() {
       </div>
     </div>
 
-    <h4 style="margin:18px 0 8px;">📌 4. المفرد والجمع (Singular &amp; Plural — ص 23 و 27)</h4>
+    <h4 style="margin:18px 0 8px;">📌 4. المفرد والجمع (Singular &amp; Plural)</h4>
     <p style="margin-top:0; color:var(--text-muted);">في الألماني كل الأسماء في الجمع بتاخد أداة واحدة بس هي <span class="art-badge art-pl">die</span>، ودي الـ 5 نهايات الأساسية للجمع:</p>
     <div class="table-wrap">
       <table>
@@ -805,7 +805,7 @@ function renderVocabGrid() {
         ${w.example ? `<div class="vocab-example">${escapeHtml(w.example)}</div>` : ""}
         <div class="vocab-meta">
           <div>
-            <span>الوحدة ${w.unit} (${escapeHtml(w.ref)})</span> · <span>${escapeHtml(w.category)}</span>
+            <span>الوحدة ${w.unit}</span> · <span>${escapeHtml(w.category)}</span>
             ${w.core ? ` · <span class="core-star" title="كلمة أساسية لامتحان Start Deutsch 1">⭐ امتحان A1</span>` : ""}
           </div>
           <button type="button" class="learn-btn ${isLearned ? "done" : ""}" data-learn-key="${escapeHtml(key)}">
@@ -1493,7 +1493,7 @@ function renderFlashcard() {
   document.getElementById("fcPlural").textContent = item.pluralOrForm ? `(${item.pluralOrForm})` : "";
   document.getElementById("fcEgyptian").textContent = item.egyptian;
   document.getElementById("fcExample").textContent = item.example || "";
-  document.getElementById("fcRef").textContent = `الوحدة ${item.unit} (${item.ref}) · ${item.category}`;
+  document.getElementById("fcRef").textContent = `الوحدة ${item.unit} · ${item.category}`;
   document.getElementById("fcCounter").textContent = `كارت ${fcIndex + 1} من ${fcDeck.length}`;
 }
 

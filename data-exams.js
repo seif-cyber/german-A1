@@ -172,7 +172,7 @@ const EXAMS_DATA = [
         prompt: "إيه معنى كلمة „das Handtuch“ بالعامية المصرية؟",
         options: ["فوطة", "شنطة سفر", "إزازة", "مكرونة"],
         answer: "فوطة",
-        explanation: "das Handtuch = فوطة (من كلمات Deutsch international ص 9)."
+        explanation: "das Handtuch = فوطة (من كلمات Deutsch international)."
       },
       {
         section: "Wortschatz (الكلمات والمواقف)",
@@ -389,7 +389,7 @@ const EXAMS_DATA = [
         prompt: "إيه معنى كلمة „die Rechnung“ (في المطعم مع الجرسون)؟",
         options: ["الفاتورة / شيك الحساب", "البرشامة", "الحقنة", "المفتاح"],
         answer: "الفاتورة / شيك الحساب",
-        explanation: "die Rechnung = الفاتورة / الحساب (ص 22)."
+        explanation: "die Rechnung = الفاتورة / الحساب ()."
       },
       {
         section: "Wortschatz (الكلمات والمواقف)",
@@ -710,14 +710,14 @@ const EXAMS_DATA = [
         prompt: "إيه معنى „das Wörterbuch“؟",
         options: ["قاموس", "كتاب تدريبات", "كارت مذاكرة", "جدول"],
         answer: "قاموس",
-        explanation: "das Wörterbuch = قاموس (ص 24)."
+        explanation: "das Wörterbuch = قاموس ()."
       },
       {
         section: "Wortschatz (الكلمات والمواقف)",
         prompt: "في الاستمارة مكتوب „männlich / weiblich“ — معناهم إيه؟",
         options: ["ذكر / أنثى", "أعزب / متزوج", "الاسم الأول / اسم العيلة", "صغير / كبير"],
         answer: "ذكر / أنثى",
-        explanation: "männlich = ذكر | weiblich = أنثى (خانة Geschlecht ص 25)."
+        explanation: "männlich = ذكر | weiblich = أنثى (خانة Geschlecht)."
       }
     ]
   }
