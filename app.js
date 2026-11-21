@@ -1,4 +1,4 @@
-// ==================== أدوات مساعدة والنطق الصوتي ====================
+// ==================== أدوات مساعدة وتنسيق ====================
 function escapeHtml(str) {
   return String(str ?? "")
     .replace(/&/g, "&amp;")
@@ -16,29 +16,117 @@ function normalizeText(str) {
     .replace(/ى/g, "ي");
 }
 
-function speakGerman(text) {
-  if (!("speechSynthesis" in window)) return;
+function cleanAudioKey(text) {
+  return String(text ?? "")
+    .replace(/\|/g, "")
+    .replace(/\([^)]*\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// ==================== محرك الصوت الألماني الأصلي (Native MP3 + Speed + Smart Fallback) ====================
+let speechSpeed = Number(localStorage.getItem("netzwerk_a1_speed_v1") || "1.0");
+let activeAudio = null;
+let activeSpeakBtn = null;
+let cachedVoices = [];
+
+if ("speechSynthesis" in window) {
+  const refreshVoices = () => { cachedVoices = window.speechSynthesis.getVoices() || []; };
+  refreshVoices();
+  window.speechSynthesis.onvoiceschanged = refreshVoices;
+}
+
+function clearSpeakingState() {
+  if (activeSpeakBtn) {
+    activeSpeakBtn.classList.remove("speaking");
+    activeSpeakBtn = null;
+  }
+}
+
+function pickBestGermanVoice() {
+  const list = cachedVoices.length ? cachedVoices : (window.speechSynthesis ? window.speechSynthesis.getVoices() : []);
+  const deVoices = list.filter((v) => v.lang && v.lang.toLowerCase().startsWith("de"));
+  if (!deVoices.length) return null;
+  const preferred = [
+    (v) => /katja|conrad|amala|killian/i.test(v.name) && /natural|online/i.test(v.name),
+    (v) => /google deutsch/i.test(v.name),
+    (v) => /natural|neural|online/i.test(v.name),
+    (v) => v.lang.toLowerCase() === "de-de"
+  ];
+  for (const test of preferred) {
+    const found = deVoices.find(test);
+    if (found) return found;
+  }
+  return deVoices[0];
+}
+
+function speakGerman(text, triggerBtn = null) {
+  const clean = cleanAudioKey(text);
+  if (!clean) return;
+
+  // إيقاف أي صوت شغال
+  if (activeAudio) {
+    try { activeAudio.pause(); activeAudio.currentTime = 0; } catch (_) {}
+    activeAudio = null;
+  }
+  if ("speechSynthesis" in window) {
+    try { window.speechSynthesis.cancel(); } catch (_) {}
+  }
+  clearSpeakingState();
+
+  if (triggerBtn) {
+    activeSpeakBtn = triggerBtn;
+    activeSpeakBtn.classList.add("speaking");
+  }
+
+  // 1. الطبقة الأولى: ملف MP3 ألماني أصلي محلي (AUDIO_MANIFEST)
+  const manifest = typeof AUDIO_MANIFEST !== "undefined" ? AUDIO_MANIFEST : {};
+  const mp3Path = manifest[clean.toLowerCase()];
+
+  if (mp3Path) {
+    const audio = new Audio(mp3Path);
+    audio.playbackRate = speechSpeed;
+    activeAudio = audio;
+    audio.onended = () => { clearSpeakingState(); activeAudio = null; };
+    audio.onerror = () => { clearSpeakingState(); activeAudio = null; fallbackSpeak(clean); };
+    audio.play().catch(() => { clearSpeakingState(); fallbackSpeak(clean); });
+    return;
+  }
+
+  // 2. Fallback للجمل الديناميكية (مثل محوّل الأرقام لأي رقم مخصص)
+  fallbackSpeak(clean);
+}
+
+function fallbackSpeak(clean) {
+  if ("speechSynthesis" in window) {
+    const deVoice = pickBestGermanVoice();
+    if (deVoice) {
+      const utter = new SpeechSynthesisUtterance(clean);
+      utter.voice = deVoice;
+      utter.lang = "de-DE";
+      utter.rate = speechSpeed;
+      utter.onend = clearSpeakingState;
+      utter.onerror = clearSpeakingState;
+      window.speechSynthesis.speak(utter);
+      return;
+    }
+  }
+  // محاولة أخيرة عبر Google TTS أونلاين لو المتصفح معلهوش صوت ألماني نهائياً
   try {
-    window.speechSynthesis.cancel();
-    const clean = String(text)
-      .replace(/\|/g, "")
-      .replace(/\([^)]*\)/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-    const utter = new SpeechSynthesisUtterance(clean);
-    utter.lang = "de-DE";
-    utter.rate = 0.92;
-    const voices = window.speechSynthesis.getVoices();
-    const deVoice = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith("de"));
-    if (deVoice) utter.voice = deVoice;
-    window.speechSynthesis.speak(utter);
-  } catch (e) {
-    console.warn("Speech synthesis unavailable:", e);
+    const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=de&q=${encodeURIComponent(clean)}`;
+    const audio = new Audio(url);
+    audio.playbackRate = speechSpeed;
+    activeAudio = audio;
+    audio.onended = clearSpeakingState;
+    audio.onerror = clearSpeakingState;
+    audio.play().catch(clearSpeakingState);
+  } catch (_) {
+    clearSpeakingState();
   }
 }
 
 function speakBtnHtml(text) {
-  return `<button type="button" class="speak-btn" data-speak="${escapeHtml(text)}" title="اسمع النطق الألماني">🔊</button>`;
+  return `<button type="button" class="speak-btn" data-speak="${escapeHtml(text)}" title="اسمع النطق الألماني الأصلي">🔊</button>`;
 }
 
 function articleBadgeHtml(article, category) {
@@ -49,6 +137,52 @@ function articleBadgeHtml(article, category) {
   if (article === "der/die") return `<span class="art-badge art-der">der</span><span class="art-badge art-die">die</span>`;
   if (category === "أفعال") return `<span class="art-badge art-verb">Verb</span>`;
   return "";
+}
+
+function getFullSpeakText(item) {
+  const prefix = item.article && item.article !== "der/die" && item.article !== "die (Pl.)" ? `${item.article} ` : "";
+  return prefix + item.german;
+}
+
+// ==================== احتفال Confetti عند التفوق ====================
+function launchConfetti() {
+  const canvas = document.getElementById("confettiCanvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ["#c8102e", "#f59e0b", "#16a34a", "#2563eb", "#7c3aed", "#ec4899"];
+  const pieces = Array.from({ length: 85 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * 140,
+    w: 7 + Math.random() * 6,
+    h: 5 + Math.random() * 5,
+    vx: (Math.random() - 0.5) * 4,
+    vy: 3 + Math.random() * 4.5,
+    rot: Math.random() * 360,
+    vrot: (Math.random() - 0.5) * 10,
+    color: colors[Math.floor(Math.random() * colors.length)]
+  }));
+
+  let frames = 0;
+  function tick() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rot * Math.PI) / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frames++;
+    if (frames < 120) requestAnimationFrame(tick);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  requestAnimationFrame(tick);
 }
 
 // ==================== تحويل الأرقام إلى الألمانية (0 – 999,999) ====================
@@ -88,11 +222,18 @@ function numberToGerman(n) {
   return result;
 }
 
-// ==================== حالة التطبيق والحفظ المحلي ====================
+// ==================== حالة التطبيق والتخزين المحلي ====================
 const STORAGE_KEY_LEARNED = "netzwerk_a1_learned_v1";
 const STORAGE_KEY_THEME = "netzwerk_a1_theme_v1";
+const STORAGE_KEY_EXAMS = "netzwerk_a1_exams_v1";
+
+const ALL_EXERCISES = [
+  ...EXERCISES_DATA.map((e) => ({ source: "kb", ...e })),
+  ...(typeof UB_EXERCISES_DATA !== "undefined" ? UB_EXERCISES_DATA : [])
+];
 
 let learnedSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_LEARNED) || "[]"));
+let examHistory = JSON.parse(localStorage.getItem(STORAGE_KEY_EXAMS) || "{}");
 let filterCoreOnly = false;
 let filterUnlearnedOnly = false;
 
@@ -102,27 +243,51 @@ function saveLearned() {
 }
 
 function updateHeroStats() {
-  document.getElementById("statTotalWords").textContent = VOCAB_DATA.length;
-  document.getElementById("statLearnedWords").textContent = `${learnedSet.size} / ${VOCAB_DATA.length}`;
-  document.getElementById("statTotalExercises").textContent = EXERCISES_DATA.length;
+  const total = VOCAB_DATA.length;
+  const learned = learnedSet.size;
+  document.getElementById("statTotalWords").textContent = total;
+  document.getElementById("statLearnedWords").textContent = `${learned} / ${total}`;
+  document.getElementById("statTotalExercises").textContent = ALL_EXERCISES.length;
+  document.getElementById("statTotalExams").textContent = EXAMS_DATA.length;
+  const pct = total ? Math.round((learned / total) * 100) : 0;
+  const bar = document.getElementById("heroProgressFill");
+  if (bar) bar.style.width = `${Math.max(pct, learned > 0 ? 4 : 0)}%`;
 }
 
-// ==================== التبويبات والوضع الليلي ====================
-function initTheme() {
+// ==================== شاشة التحميل، السرعة، المظهر، والتبويبات ====================
+function initSplash() {
+  const splash = document.getElementById("splashScreen");
+  if (!splash) return;
+  const dismiss = () => splash.classList.add("hide");
+  setTimeout(dismiss, 1250);
+  splash.addEventListener("click", dismiss);
+}
+
+function initHeaderControls() {
   const saved = localStorage.getItem(STORAGE_KEY_THEME) || "light";
   document.documentElement.setAttribute("data-theme", saved);
+  const themeBtn = document.getElementById("themeToggle");
+  const updateThemeBtn = (t) => { themeBtn.textContent = t === "dark" ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي"; };
   updateThemeBtn(saved);
-  document.getElementById("themeToggle").addEventListener("click", () => {
-    const curr = document.documentElement.getAttribute("data-theme");
-    const next = curr === "dark" ? "light" : "dark";
+  themeBtn.addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem(STORAGE_KEY_THEME, next);
     updateThemeBtn(next);
   });
-}
 
-function updateThemeBtn(theme) {
-  document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
+  const speedBtn = document.getElementById("speedToggle");
+  const updateSpeedBtn = () => {
+    const isSlow = speechSpeed < 0.9;
+    speedBtn.textContent = isSlow ? "🐢 النطق: بطيء (0.75x)" : "▶️ النطق: طبيعي (1.0x)";
+    speedBtn.classList.toggle("slow-active", isSlow);
+  };
+  updateSpeedBtn();
+  speedBtn.addEventListener("click", () => {
+    speechSpeed = speechSpeed < 0.9 ? 1.0 : 0.75;
+    localStorage.setItem("netzwerk_a1_speed_v1", String(speechSpeed));
+    updateSpeedBtn();
+  });
 }
 
 function switchTab(tabId) {
@@ -137,19 +302,20 @@ function initTabs() {
   });
 }
 
-// ==================== 1. بناء تبويب الملخص السريع ====================
+// ==================== 1. الملخص السريع ====================
 function renderSummary() {
   const mount = document.getElementById("summaryMount");
-  const renderUnitSummary = (uData, tabTarget, numLabel) => `
-    <div class="card">
+  const renderUnitSummary = (uData, tabTarget) => `
+    <div class="card reveal-up">
       <div class="section-header">
         <div>
           <h2>${uData.title}</h2>
           <div style="color:var(--text-muted); font-size:0.9rem;">${uData.subtitle}</div>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="switchTab('${tabTarget}')">📖 افتح الشرح الكامل</button>
-          <button class="btn btn-secondary" onclick="switchTab('exercises')">✍️ حل التدريبات</button>
+          <button class="btn btn-primary" onclick="switchTab('${tabTarget}')">📖 الشرح الكامل</button>
+          <button class="btn btn-secondary" onclick="switchTab('exercises')">✍️ التمارين</button>
+          <button class="btn btn-secondary" onclick="switchTab('exams')">🎓 الامتحان</button>
         </div>
       </div>
       <p style="margin-top:0;">${uData.intro}</p>
@@ -167,23 +333,24 @@ function renderSummary() {
   `;
 
   mount.innerHTML = `
-    ${renderUnitSummary(UNITS_DATA.unit1, "unit1", "1")}
-    ${renderUnitSummary(UNITS_DATA.unit2, "unit2", "2")}
-    <div class="card">
+    ${renderUnitSummary(UNITS_DATA.unit1, "unit1")}
+    ${renderUnitSummary(UNITS_DATA.unit2, "unit2")}
+    <div class="card reveal-up">
       <div class="section-header">
-        <h3>🚀 خطة مذاكرة سريعة بالصفحة دي</h3>
-        <span class="page-badge">نصيحة للمذاكرة</span>
+        <h3>🚀 خطة مذاكرة ذكية بالصفحة دي</h3>
+        <span class="page-badge">4 خطوات وتقفّل الوحدتين</span>
       </div>
-      <div class="grid-3">
-        <div class="mini-card"><div><strong>1. افهم الشرح</strong><div class="eg">اقرأ تبويب الوحدة 1 ثم الوحدة 2 بالترتيب واسمع نطق الجمل.</div></div></div>
-        <div class="mini-card"><div><strong>2. احفظ الكلمات</strong><div class="eg">افتح "قاموس الوحدتين" وفعل فلتر ⭐ كلمات الامتحان الأساسية الأول.</div></div></div>
-        <div class="mini-card"><div><strong>3. حل واختبر نفسك</strong><div class="eg">حل تدريبات الكتاب في تبويب "تدريبات الوحدتين" واختم بالبطاقات والاختبار!</div></div></div>
+      <div class="grid-2">
+        <div class="mini-card"><div><strong>1. افهم الشرح</strong><div class="eg">اقرأ تبويب الوحدة 1 ثم الوحدة 2 واسمع النطق الأصلي بسرعة 0.75x لو لسه بتبدأ.</div></div></div>
+        <div class="mini-card"><div><strong>2. احفظ القاموس</strong><div class="eg">افتح القاموس وفعل فلتر ⭐ كلمات الامتحان الأساسية وعلم على اللي حفظته.</div></div></div>
+        <div class="mini-card"><div><strong>3. حل كتاب التمارين</strong><div class="eg">افتح تبويب التدريبات واختار Übungsbuch وحل تمارين الكتاب كله بتصحيح فوري.</div></div></div>
+        <div class="mini-card"><div><strong>4. قيّم نفسك</strong><div class="eg">ادخل تبويب 🎓 الامتحانات وامتحن استماع وقراءة وقواعد وشوف نقاط ضعفك.</div></div></div>
       </div>
     </div>
   `;
 }
 
-// ==================== 2 & 3. بناء شرح الوحدة 1 و 2 ====================
+// ==================== 2 & 3. شرح الوحدة 1 و 2 ====================
 function renderGrammarU1() {
   return `
     <div class="grid-2">
@@ -243,10 +410,10 @@ function renderGrammarU1() {
 
 function renderU1NumbersAlphabet() {
   return `
-    <h4>🔢 الأرقام من 0 لـ 20 (اضغط على أي رقم لسماع نطقه 🔊)</h4>
+    <h4>🔢 الأرقام من 0 لـ 20 (اضغط على أي رقم لسماع نطقه الأصلي 🔊)</h4>
     <div class="callout info">
       <strong>💡 سر قراءة الأرقام من 13 لـ 19:</strong>
-      بنقرأ الرقم الصغير الأول وبعدين <span class="de">zehn</span> (10)! مثلاً 14 = <span class="de">vierzehn</span> (أربعة عشرة). خلي بالك من 16 (<span class="de">sechzehn</span> شيلنا s) و 17 (<span class="de">siebzehn</span> شيلنا en).
+      بنقرأ الرقم الصغير الأول وبعدين <span class="de">zehn</span> (10)! مثلاً 14 = <span class="de">vierzehn</span>. خلي بالك من 16 (<span class="de">sechzehn</span> شيلنا s) و 17 (<span class="de">siebzehn</span> شيلنا en).
     </div>
     <div class="num-grid">
       ${UNITS_DATA.numbers0to20.map((n) => `
@@ -469,10 +636,7 @@ function renderUnit(unitKey, mountId) {
     if (sec.type === "cards-grid") {
       body = `<div class="grid-3">${sec.items.map((it) => `
         <div class="mini-card">
-          <div>
-            <span class="de">${it.de}</span>
-            <span class="eg">${it.eg}</span>
-          </div>
+          <div><span class="de">${it.de}</span><span class="eg">${it.eg}</span></div>
           ${speakBtnHtml(it.de)}
         </div>
       `).join("")}</div>`;
@@ -507,22 +671,17 @@ function renderUnit(unitKey, mountId) {
             </tbody>
           </table>
         </div>`;
-    } else if (sec.type === "grammar-u1") {
-      body = renderGrammarU1();
-    } else if (sec.type === "u1-numbers-alphabet") {
-      body = renderU1NumbersAlphabet();
-    } else if (sec.type === "u2-days-plans") {
-      body = renderU2DaysPlans();
-    } else if (sec.type === "grammar-u2") {
-      body = renderGrammarU2();
-    } else if (sec.type === "u2-numbers-converter") {
-      body = renderU2NumbersConverter();
-    } else if (sec.type === "bullets") {
+    } else if (sec.type === "grammar-u1") body = renderGrammarU1();
+    else if (sec.type === "u1-numbers-alphabet") body = renderU1NumbersAlphabet();
+    else if (sec.type === "u2-days-plans") body = renderU2DaysPlans();
+    else if (sec.type === "grammar-u2") body = renderGrammarU2();
+    else if (sec.type === "u2-numbers-converter") body = renderU2NumbersConverter();
+    else if (sec.type === "bullets") {
       body = `<ul style="margin:0; padding-right:20px;">${sec.bullets.map((b) => `<li style="margin-bottom:8px;">${b}</li>`).join("")}</ul>`;
     }
 
     return `
-      <article class="card" id="${sec.id}">
+      <article class="card reveal-up" id="${sec.id}">
         <div class="section-header">
           <h3>${sec.title}</h3>
           <span class="page-badge">${sec.badge}</span>
@@ -548,25 +707,22 @@ function initNumberConverter() {
   const spk = document.getElementById("numConvSpeak");
   if (!inp || !out) return;
 
-  const update = () => {
-    out.textContent = numberToGerman(inp.value);
-  };
+  const update = () => { out.textContent = numberToGerman(inp.value); };
   inp.addEventListener("input", update);
-  spk.addEventListener("click", () => speakGerman(out.textContent));
+  spk.addEventListener("click", () => speakGerman(out.textContent, spk));
   document.querySelectorAll("[data-preset]").forEach((btn) => {
     btn.addEventListener("click", () => {
       inp.value = btn.dataset.preset;
       update();
-      speakGerman(out.textContent);
+      speakGerman(out.textContent, spk);
     });
   });
 }
 
-// ==================== 4. القاموس الشامل والبحث والفلترة ====================
+// ==================== 4. القاموس الشامل ====================
 function initVocab() {
   const catSel = document.getElementById("vocabCatFilter");
-  const cats = [...new Set(VOCAB_DATA.map((v) => v.category))];
-  cats.forEach((c) => {
+  [...new Set(VOCAB_DATA.map((v) => v.category))].forEach((c) => {
     const opt = document.createElement("option");
     opt.value = c;
     opt.textContent = c;
@@ -596,9 +752,7 @@ function initVocab() {
   renderVocabGrid();
 }
 
-function getVocabKey(item) {
-  return `${item.unit}:${item.german}`;
-}
+function getVocabKey(item) { return `${item.unit}:${item.german}`; }
 
 function renderVocabGrid() {
   const q = normalizeText(document.getElementById("vocabSearch").value);
@@ -637,7 +791,6 @@ function renderVocabGrid() {
   grid.innerHTML = filtered.map((w) => {
     const key = getVocabKey(w);
     const isLearned = learnedSet.has(key);
-    const fullSpeak = (w.article && w.article !== "der/die" && w.article !== "die (Pl.)" ? `${w.article} ` : "") + w.german;
     return `
       <div class="vocab-card ${isLearned ? "learned" : ""}">
         <div class="vocab-top">
@@ -646,7 +799,7 @@ function renderVocabGrid() {
             <span class="vocab-de">${escapeHtml(w.german)}</span>
             ${w.pluralOrForm ? `<span class="vocab-plural">(${escapeHtml(w.pluralOrForm)})</span>` : ""}
           </div>
-          ${speakBtnHtml(fullSpeak)}
+          ${speakBtnHtml(getFullSpeakText(w))}
         </div>
         <div class="vocab-eg">${escapeHtml(w.egyptian)}</div>
         ${w.example ? `<div class="vocab-example">${escapeHtml(w.example)}</div>` : ""}
@@ -664,10 +817,21 @@ function renderVocabGrid() {
   }).join("");
 }
 
-// ==================== 5. محرك التدريبات التفاعلية ====================
+// ==================== 5. محرك التدريبات التفاعلية (Kursbuch + Übungsbuch) ====================
 let currentExUnit = "all";
+let currentExSrc = "all";
 
 function initExercises() {
+  document.querySelectorAll(".ex-src-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      currentExSrc = btn.dataset.exsrc;
+      document.querySelectorAll(".ex-src-btn").forEach((b) => {
+        b.className = b === btn ? "btn btn-primary ex-src-btn" : "btn btn-secondary ex-src-btn";
+      });
+      renderExercises();
+    });
+  });
+
   document.querySelectorAll(".ex-unit-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       currentExUnit = btn.dataset.exunit;
@@ -677,12 +841,22 @@ function initExercises() {
       renderExercises();
     });
   });
+
   renderExercises();
 }
 
 function renderExercises() {
   const mount = document.getElementById("exercisesMount");
-  const list = EXERCISES_DATA.filter((ex) => currentExUnit === "all" || String(ex.unit) === currentExUnit);
+  const list = ALL_EXERCISES.filter((ex) => {
+    if (currentExUnit !== "all" && String(ex.unit) !== currentExUnit) return false;
+    if (currentExSrc !== "all" && ex.source !== currentExSrc) return false;
+    return true;
+  });
+
+  if (!list.length) {
+    mount.innerHTML = `<div class="card" style="text-align:center;">مفيش تدريبات في الفلتر ده.</div>`;
+    return;
+  }
 
   mount.innerHTML = list.map((ex) => {
     let body = "";
@@ -709,7 +883,7 @@ function renderExercises() {
           : `<input type="text" class="ex-input-inline" data-ex="${ex.id}" data-idx="${idx}" placeholder="اكتب هنا..." autocomplete="off" />`;
         return `
           <div class="ex-item" data-ex="${ex.id}" data-idx="${idx}">
-            <div style="line-height:2.1;">
+            <div style="line-height:2.2;">
               <span class="de">${escapeHtml(it.before)}</span>
               ${control}
               <span class="de">${escapeHtml(it.after)}</span>
@@ -730,6 +904,24 @@ function renderExercises() {
           <div class="ex-feedback" id="fb-${ex.id}-${idx}"></div>
         </div>
       `).join("")}</div>`;
+    } else if (ex.type === "verb-table") {
+      body = `
+        <div class="table-wrap">
+          <table>
+            <thead><tr>${ex.headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${ex.rows.map((r, rIdx) => `
+                <tr>
+                  <td class="de"><strong>${escapeHtml(r.pronoun)}</strong></td>
+                  ${r.cells.map((c, cIdx) => c.prefilled
+                    ? `<td class="de hl-red">${escapeHtml(c.prefilled)}</td>`
+                    : `<td><input type="text" class="ex-input-inline" data-vtable="${ex.id}" data-r="${rIdx}" data-c="${cIdx}" placeholder="..." autocomplete="off" /></td>`
+                  ).join("")}
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>`;
     } else if (ex.type === "word-order") {
       body = ex.sentences.map((s, idx) => {
         const shuffled = [...s.words].sort(() => Math.random() - 0.5);
@@ -739,9 +931,26 @@ function renderExercises() {
         return `
           <div class="order-sentence-box" data-ex="${ex.id}" data-idx="${idx}">
             <div style="font-weight:700; margin-bottom:6px;">${idx + 1}. المعنى المطلوب: <span style="color:var(--primary);">${escapeHtml(s.hint)}</span></div>
-            <div class="order-zone" id="oz-ans-${ex.id}-${idx}" data-zone="answer"></div>
+            <div class="order-zone" id="oz-ans-${ex.id}-${idx}"></div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; direction:ltr;" id="oz-pool-${ex.id}-${idx}">
               ${shuffled.map((w, wi) => `<button type="button" class="word-chip" data-ex="${ex.id}" data-idx="${idx}" data-wi="${wi}" data-word="${escapeHtml(w)}">${escapeHtml(w)}</button>`).join("")}
+            </div>
+            <div class="ex-feedback" id="fb-${ex.id}-${idx}"></div>
+          </div>
+        `;
+      }).join("");
+    } else if (ex.type === "dialog-order") {
+      body = ex.dialogs.map((d, idx) => {
+        const shuffled = [...d.lines].sort(() => Math.random() - 0.5);
+        if (shuffled.join("|") === d.lines.join("|") && shuffled.length > 1) {
+          [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+        }
+        return `
+          <div class="order-sentence-box" data-ex="${ex.id}" data-idx="${idx}">
+            <div style="font-weight:800; margin-bottom:6px; color:var(--primary);">${escapeHtml(d.title)}</div>
+            <div class="order-zone vertical" id="oz-ans-${ex.id}-${idx}"></div>
+            <div style="display:flex; flex-direction:column; gap:7px; direction:ltr;" id="oz-pool-${ex.id}-${idx}">
+              ${shuffled.map((line, wi) => `<button type="button" class="word-chip" data-ex="${ex.id}" data-idx="${idx}" data-wi="${wi}" data-word="${escapeHtml(line)}">${escapeHtml(line)}</button>`).join("")}
             </div>
             <div class="ex-feedback" id="fb-${ex.id}-${idx}"></div>
           </div>
@@ -766,7 +975,7 @@ function renderExercises() {
           <h4>📋 Sportclub „Fit“ — Anmeldung</h4>
           <div class="club-form-grid">
             <div class="form-group"><label>Vorname (الاسم الأول)</label><input class="input-field" name="vorname" required placeholder="مثال: Seif" /></div>
-            <div class="form-group"><label>Familienname (اسم العيلة)</label><input class="input-field" name="nachname" required placeholder="مثال: Ahmed" /></div>
+            <div class="form-group"><label>Familienname (اسم العيلة)</label><input class="input-field" name="nachname" required placeholder="مثال: Al-Deen" /></div>
             <div class="form-group"><label>Geschlecht (النوع)</label>
               <select name="geschlecht" required>
                 <option value="">-- اختار --</option>
@@ -799,6 +1008,10 @@ function renderExercises() {
       `;
     }
 
+    const srcBadge = ex.source === "ub"
+      ? `<span class="source-badge-ub">📘 كتاب التمارين ÜB</span>`
+      : `<span class="source-badge-kb">📕 كتاب الشرح KB</span>`;
+
     const actionsHtml = ex.type === "club-form" ? "" : `
       <div class="ex-actions">
         <button type="button" class="btn btn-primary" data-ex-check="${ex.id}">✅ تحقق من إجابتك</button>
@@ -809,14 +1022,15 @@ function renderExercises() {
     `;
 
     return `
-      <article class="card" id="card-${ex.id}">
+      <article class="card reveal-up" id="card-${ex.id}">
         <div class="section-header">
-          <div>
-            <h3>${ex.title}</h3>
+          <h3>${ex.title}</h3>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            ${srcBadge}
+            <span class="page-badge">الوحدة ${ex.unit} · ${ex.ref}</span>
           </div>
-          <span class="page-badge">الوحدة ${ex.unit} · ${ex.ref}</span>
         </div>
-        <p style="margin-top:0; color:var(--text-muted);">${ex.instructions}</p>
+        <p style="margin-top:0; color:var(--text-muted); white-space:pre-line;">${escapeHtml(ex.instructions)}</p>
         ${body}
         ${actionsHtml}
       </article>
@@ -827,7 +1041,6 @@ function renderExercises() {
 }
 
 function bindExerciseEvents() {
-  // اختيار أداة der/das/die
   document.querySelectorAll(".art-choice-group .art-choice-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const grp = btn.closest(".art-choice-group");
@@ -837,7 +1050,6 @@ function bindExerciseEvents() {
     });
   });
 
-  // ترتيب الجمل (الضغط على الكلمة ينقلها لخانة الإجابة)
   document.querySelectorAll(".word-chip[data-wi]").forEach((chip) => {
     chip.addEventListener("click", () => {
       const { ex, idx, wi, word } = chip.dataset;
@@ -856,13 +1068,11 @@ function bindExerciseEvents() {
     });
   });
 
-  // استمارة النادي التفاعلية
   const kursSel = document.getElementById("clubKursSelect");
   const tagInp = document.getElementById("clubTagInput");
   if (kursSel && tagInp) {
     kursSel.addEventListener("change", () => {
-      const parts = kursSel.value.split("|");
-      tagInp.value = parts[1] || "";
+      tagInp.value = (kursSel.value.split("|")[1]) || "";
     });
   }
   const clubForm = document.getElementById("clubRegForm");
@@ -871,18 +1081,16 @@ function bindExerciseEvents() {
       e.preventDefault();
       const fd = new FormData(clubForm);
       const kursName = (fd.get("kurs") || "").split("|")[0];
-      const out = document.getElementById("clubFormResult");
-      out.innerHTML = `
+      document.getElementById("clubFormResult").innerHTML = `
         <div class="callout info" style="margin:0;">
           <strong>🎉 ممتاز! استمارتك متمليّة صح 100% بالألماني:</strong>
           Hallo <span class="de">${escapeHtml(fd.get("vorname"))} ${escapeHtml(fd.get("nachname"))}</span>!
           تم تسجيلك في كورس <span class="de">${escapeHtml(kursName)}</span> يوم <span class="de">${escapeHtml(fd.get("tag"))}</span> — العنوان: <span class="de">${escapeHtml(fd.get("strasse"))}, ${escapeHtml(fd.get("ort"))}</span>.
-        </div>
-      `;
+        </div>`;
+      launchConfetti();
     });
   }
 
-  // أزرار التحقق / الإظهار / الإعادة
   document.querySelectorAll("[data-ex-check]").forEach((btn) => {
     btn.addEventListener("click", () => evaluateExercise(btn.dataset.exCheck, false));
   });
@@ -895,7 +1103,7 @@ function bindExerciseEvents() {
 }
 
 function evaluateExercise(exId, revealOnly) {
-  const ex = EXERCISES_DATA.find((e) => e.id === exId);
+  const ex = ALL_EXERCISES.find((e) => e.id === exId);
   if (!ex) return;
   let correctCount = 0;
   let total = 0;
@@ -954,23 +1162,48 @@ function evaluateExercise(exId, revealOnly) {
         if (ok) correctCount++;
       }
     });
-  } else if (ex.type === "word-order") {
-    total = ex.sentences.length;
-    ex.sentences.forEach((s, idx) => {
+  } else if (ex.type === "verb-table") {
+    ex.rows.forEach((r, rIdx) => {
+      r.cells.forEach((c, cIdx) => {
+        if (c.prefilled) return;
+        total++;
+        const inp = document.querySelector(`input[data-vtable="${exId}"][data-r="${rIdx}"][data-c="${cIdx}"]`);
+        if (!inp) return;
+        if (revealOnly) {
+          inp.value = c.answer;
+          inp.classList.remove("wrong");
+          inp.classList.add("correct");
+          correctCount++;
+        } else {
+          const accepted = (c.accepted || [c.answer]).map((a) => a.toLowerCase());
+          const ok = accepted.includes(inp.value.trim().toLowerCase());
+          inp.classList.toggle("correct", ok);
+          inp.classList.toggle("wrong", !ok);
+          if (!ok) inp.title = `الصح: ${c.answer}`;
+          if (ok) correctCount++;
+        }
+      });
+    });
+  } else if (ex.type === "word-order" || ex.type === "dialog-order") {
+    const list = ex.type === "word-order" ? ex.sentences : ex.dialogs;
+    total = list.length;
+    list.forEach((s, idx) => {
       const zone = document.getElementById(`oz-ans-${exId}-${idx}`);
       const fb = document.getElementById(`fb-${exId}-${idx}`);
-      const target = s.words.join(" ");
+      const seq = ex.type === "word-order" ? s.words : s.lines;
+      const sep = ex.type === "word-order" ? " " : " | ";
+      const target = seq.join(sep);
       if (revealOnly) {
-        zone.innerHTML = s.words.map((w) => `<span class="word-chip placed">${escapeHtml(w)}</span>`).join("");
+        zone.innerHTML = seq.map((w) => `<span class="word-chip placed">${escapeHtml(w)}</span>`).join("");
         fb.className = "ex-feedback show";
         fb.innerHTML = `💡 <span class="de">${escapeHtml(target)}</span> — ${escapeHtml(s.explanation)}`;
         correctCount++;
       } else {
-        const userSentence = [...zone.querySelectorAll(".word-chip")].map((c) => c.textContent).join(" ");
-        const ok = userSentence === target;
+        const userSeq = [...zone.querySelectorAll(".word-chip")].map((c) => c.textContent).join(sep);
+        const ok = userSeq === target;
         fb.className = "ex-feedback show";
         fb.innerHTML = ok
-          ? `✅ جملة مظبوطة 100%! ${escapeHtml(s.explanation)}`
+          ? `✅ ترتيب مظبوط 100%! ${escapeHtml(s.explanation)}`
           : `❌ الترتيب الصح: <span class="de">${escapeHtml(target)}</span> — ${escapeHtml(s.explanation)}`;
         if (ok) correctCount++;
       }
@@ -981,9 +1214,262 @@ function evaluateExercise(exId, revealOnly) {
   if (badge) {
     badge.textContent = revealOnly ? `💡 تم إظهار الحل (${total}/${total})` : `النتيجة: ${correctCount} / ${total}`;
   }
+  if (!revealOnly && total > 0 && correctCount === total) launchConfetti();
 }
 
-// ==================== 6. البطاقات التفاعلية (Flashcards) ====================
+// ==================== 6. مركز الامتحانات التقييمية (Exam Center) ====================
+let activeExam = null;
+let examAnswers = {};
+let examTimerInterval = null;
+let examSecondsLeft = 0;
+let examUseTimer = true;
+
+function initExams() {
+  renderExamHub();
+}
+
+function stopExamTimer() {
+  if (examTimerInterval) {
+    clearInterval(examTimerInterval);
+    examTimerInterval = null;
+  }
+}
+
+function renderExamHub() {
+  stopExamTimer();
+  activeExam = null;
+  const mount = document.getElementById("examsMount");
+
+  mount.innerHTML = `
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div>
+        <strong>⏱️ إعداد المؤقت قبل البدء:</strong>
+        <span style="color:var(--text-muted); font-size:0.9rem;">تقدر تمتحن بوقت محدد زي الامتحان الحقيقي أو بدون مؤقت براحتك.</span>
+      </div>
+      <button type="button" id="examTimerToggleBtn" class="chip-toggle ${examUseTimer ? "active" : ""}">
+        ${examUseTimer ? "⏱️ المؤقت: شغّال (محاكاة حقيقية)" : "♾️ بدون مؤقت (تدريب حر)"}
+      </button>
+    </div>
+
+    <div class="grid-3">
+      ${EXAMS_DATA.map((ex) => {
+        const hist = examHistory[ex.id];
+        const histHtml = hist
+          ? `<div style="font-size:0.86rem; color:var(--das-color); font-weight:800;">🏆 أعلى درجة: ${hist.bestPct}% (${hist.bestScore}/${ex.questions.length}) · المحاولات: ${hist.attempts}</div>`
+          : `<div style="font-size:0.86rem; color:var(--text-muted);">لسه ممتحنتش الامتحان ده</div>`;
+        return `
+          <div class="exam-card reveal-up">
+            <span class="page-badge" style="align-self:flex-start;">${ex.badge} · ⏱️ ${ex.durationMin} دقيقة</span>
+            <h3 style="margin:0;">${ex.title}</h3>
+            <p style="margin:0; color:var(--text-muted); font-size:0.92rem;">${ex.subtitle}</p>
+            ${histHtml}
+            <button type="button" class="btn btn-primary" style="margin-top:auto; justify-content:center;" data-start-exam="${ex.id}">🚀 ابدأ الامتحان الآن</button>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  document.getElementById("examTimerToggleBtn").addEventListener("click", () => {
+    examUseTimer = !examUseTimer;
+    renderExamHub();
+  });
+
+  mount.querySelectorAll("[data-start-exam]").forEach((btn) => {
+    btn.addEventListener("click", () => startExam(btn.dataset.startExam));
+  });
+}
+
+function startExam(examId) {
+  activeExam = EXAMS_DATA.find((e) => e.id === examId);
+  if (!activeExam) return;
+  examAnswers = {};
+  stopExamTimer();
+
+  const mount = document.getElementById("examsMount");
+  let lastPassage = null;
+  let lastSection = null;
+
+  const questionsHtml = activeExam.questions.map((q, idx) => {
+    let sectionHeader = "";
+    if (q.section !== lastSection) {
+      lastSection = q.section;
+      sectionHeader = `<h3 style="margin:22px 0 10px; color:var(--primary); border-bottom:2px solid var(--surface-2); padding-bottom:6px;">📌 ${q.section}</h3>`;
+    }
+
+    let passageHtml = "";
+    if (q.passage && q.passage !== lastPassage) {
+      lastPassage = q.passage;
+      passageHtml = `<div class="exam-passage">${escapeHtml(q.passage)}</div>`;
+    } else if (!q.passage) {
+      lastPassage = null;
+    }
+
+    const audioHtml = q.audioText ? `
+      <div class="exam-audio-box">
+        <button type="button" class="btn btn-primary" data-speak="${escapeHtml(q.audioText)}">🎧 اسمع التسجيل الألماني</button>
+        <span style="font-size:0.86rem; color:var(--text-muted);">تقدر تسمع التسجيل أكتر من مرة (وبالسرعة البطيئة 0.75x من الهيدر فوق!)</span>
+      </div>` : "";
+
+    return `
+      ${sectionHeader}
+      ${passageHtml}
+      <div class="exam-q-card" id="eq-${idx}">
+        <div style="font-weight:800; margin-bottom:10px;">${idx + 1}. ${escapeHtml(q.prompt)}</div>
+        ${audioHtml}
+        <div>
+          ${q.options.map((opt) => `
+            <label class="exam-opt-label" data-q="${idx}" data-opt="${escapeHtml(opt)}">
+              <input type="radio" name="eq_${idx}" value="${escapeHtml(opt)}" style="accent-color:var(--primary);" />
+              <span>${escapeHtml(opt)}</span>
+            </label>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  mount.innerHTML = `
+    <div class="card">
+      <div class="exam-topbar">
+        <div>
+          <h3 style="margin:0;">${activeExam.title}</h3>
+          <div style="font-size:0.88rem; color:var(--text-muted);" id="examAnsweredCounter">جاوبت على 0 من ${activeExam.questions.length} سؤال</div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          ${examUseTimer ? `<div class="exam-timer" id="examTimerDisp">${activeExam.durationMin}:00</div>` : `<span class="page-badge">♾️ بدون مؤقت</span>`}
+          <button type="button" class="btn btn-secondary" id="cancelExamBtn">⬅️ رجوع لقائمة الامتحانات</button>
+        </div>
+      </div>
+
+      ${questionsHtml}
+
+      <div style="display:flex; justify-content:center; gap:12px; margin-top:24px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary" id="submitExamBtn" style="padding:13px 32px; font-size:1.02rem;">📩 تسليم الامتحان وعرض التقرير</button>
+      </div>
+    </div>
+  `;
+
+  mount.querySelectorAll(".exam-opt-label").forEach((lbl) => {
+    lbl.addEventListener("click", () => {
+      const qIdx = Number(lbl.dataset.q);
+      const opt = lbl.dataset.opt;
+      examAnswers[qIdx] = opt;
+      mount.querySelectorAll(`.exam-opt-label[data-q="${qIdx}"]`).forEach((l) => l.classList.remove("selected"));
+      lbl.classList.add("selected");
+      lbl.querySelector("input").checked = true;
+      document.getElementById("examAnsweredCounter").textContent = `جاوبت على ${Object.keys(examAnswers).length} من ${activeExam.questions.length} سؤال`;
+    });
+  });
+
+  document.getElementById("cancelExamBtn").addEventListener("click", renderExamHub);
+  document.getElementById("submitExamBtn").addEventListener("click", submitExam);
+
+  if (examUseTimer) {
+    examSecondsLeft = activeExam.durationMin * 60;
+    examTimerInterval = setInterval(() => {
+      examSecondsLeft--;
+      const m = Math.floor(examSecondsLeft / 60);
+      const s = examSecondsLeft % 60;
+      const disp = document.getElementById("examTimerDisp");
+      if (disp) disp.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      if (examSecondsLeft <= 0) submitExam();
+    }, 1000);
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function submitExam() {
+  stopExamTimer();
+  if (!activeExam) return;
+
+  let totalCorrect = 0;
+  const sectionStats = {};
+  const details = activeExam.questions.map((q, idx) => {
+    const userAns = examAnswers[idx] || "(لم يتم الإجابة)";
+    const ok = userAns === q.answer;
+    if (ok) totalCorrect++;
+    if (!sectionStats[q.section]) sectionStats[q.section] = { ok: 0, total: 0 };
+    sectionStats[q.section].total++;
+    if (ok) sectionStats[q.section].ok++;
+    return { idx, q, userAns, ok };
+  });
+
+  const total = activeExam.questions.length;
+  const pct = Math.round((totalCorrect / total) * 100);
+  const grade = pct >= 90 ? "🏆 ممتاز (Sehr gut!)" : pct >= 75 ? "👏 جيد جداً (Gut!)" : pct >= 60 ? "👍 ناجح (Bestanden)" : "💪 محتاج مراجعة بسيطة وجرب تاني!";
+
+  // حفظ السجل
+  const prev = examHistory[activeExam.id] || { bestPct: 0, bestScore: 0, attempts: 0 };
+  examHistory[activeExam.id] = {
+    bestPct: Math.max(prev.bestPct, pct),
+    bestScore: Math.max(prev.bestScore, totalCorrect),
+    attempts: prev.attempts + 1
+  };
+  localStorage.setItem(STORAGE_KEY_EXAMS, JSON.stringify(examHistory));
+
+  if (pct >= 80) launchConfetti();
+
+  const mount = document.getElementById("examsMount");
+  let mistakesOnly = false;
+
+  function drawReport() {
+    const shown = mistakesOnly ? details.filter((d) => !d.ok) : details;
+    mount.innerHTML = `
+      <div class="card reveal-up">
+        <div style="text-align:center; padding:12px 0 20px; border-bottom:2px solid var(--surface-2);">
+          <div style="font-size:3rem; font-weight:800; color:var(--primary);">${pct}%</div>
+          <div style="font-size:1.25rem; font-weight:800; margin:4px 0;">${totalCorrect} من ${total} — ${grade}</div>
+          <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:16px;">
+            <button type="button" class="btn btn-primary" id="retakeExamBtn">🔄 إعادة الامتحان</button>
+            <button type="button" class="btn btn-secondary" id="backHubBtn">📋 كل الامتحانات</button>
+            <button type="button" class="chip-toggle ${mistakesOnly ? "active" : ""}" id="toggleMistakesBtn">
+              ❌ عرض الأخطاء فقط (${details.filter((d) => !d.ok).length})
+            </button>
+          </div>
+        </div>
+
+        <h3 style="margin:20px 0 12px;">📊 تحليل مستواك في كل مهارة:</h3>
+        ${Object.entries(sectionStats).map(([secName, st]) => {
+          const sp = Math.round((st.ok / st.total) * 100);
+          return `
+            <div class="skill-bar-row">
+              <div class="skill-bar-head"><span>${secName}</span><span>${st.ok} / ${st.total} (${sp}%)</span></div>
+              <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${sp}%"></div></div>
+            </div>
+          `;
+        }).join("")}
+
+        <h3 style="margin:24px 0 12px;">🔍 مراجعة الأسئلة والشرح بالعامية:</h3>
+        ${!shown.length
+          ? `<div class="callout info"><strong>🎉 مفيش ولا غلطة! إنت قفّلت الامتحان 100%!</strong></div>`
+          : shown.map((d) => `
+            <div class="ex-item ${d.ok ? "correct" : "wrong"}">
+              <div style="font-weight:800; margin-bottom:6px;">
+                ${d.ok ? "✅" : "❌"} سؤال ${d.idx + 1} (${d.q.section}): ${escapeHtml(d.q.prompt)}
+                ${d.q.audioText ? speakBtnHtml(d.q.audioText) : ""}
+              </div>
+              <div style="font-size:0.9rem;">إجابتك: <strong>${escapeHtml(d.userAns)}</strong> ${d.ok ? "" : `| الإجابة الصح: <strong style="color:var(--das-color);">${escapeHtml(d.q.answer)}</strong>`}</div>
+              <div style="font-size:0.88rem; margin-top:5px; color:var(--text-muted);">💡 ${escapeHtml(d.q.explanation)}</div>
+            </div>
+          `).join("")}
+      </div>
+    `;
+
+    document.getElementById("retakeExamBtn").addEventListener("click", () => startExam(activeExam.id));
+    document.getElementById("backHubBtn").addEventListener("click", renderExamHub);
+    document.getElementById("toggleMistakesBtn").addEventListener("click", () => {
+      mistakesOnly = !mistakesOnly;
+      drawReport();
+    });
+  }
+
+  drawReport();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ==================== 7. البطاقات التفاعلية والاختبار السريع ====================
 let fcDeck = [];
 let fcIndex = 0;
 
@@ -1036,14 +1522,11 @@ function initFlashcards() {
   document.getElementById("fcSpeakBtn").addEventListener("click", (e) => {
     e.stopPropagation();
     const item = fcDeck[fcIndex];
-    if (!item) return;
-    const text = (item.article && item.article !== "der/die" && item.article !== "die (Pl.)" ? `${item.article} ` : "") + item.german;
-    speakGerman(text);
+    if (item) speakGerman(getFullSpeakText(item), e.currentTarget);
   });
   loadFlashcards();
 }
 
-// ==================== 7. الاختبار السريع (Quick Quiz) ====================
 let quizQuestions = [];
 let quizPos = 0;
 let quizScore = 0;
@@ -1060,7 +1543,7 @@ function generateQuiz() {
       const target = nounPool[Math.floor(Math.random() * nounPool.length)];
       quizQuestions.push({
         prompt: `إيه أداة التعريف الصح لكلمة <span class="de hl-red">${escapeHtml(target.german)}</span> (${escapeHtml(target.egyptian)})؟`,
-        speak: `${target.article} ${target.german}`,
+        speak: getFullSpeakText(target),
         options: ["der", "das", "die"],
         answer: target.article
       });
@@ -1069,15 +1552,12 @@ function generateQuiz() {
       const distractors = [];
       while (distractors.length < 3) {
         const cand = VOCAB_DATA[Math.floor(Math.random() * VOCAB_DATA.length)];
-        if (cand.egyptian !== target.egyptian && !distractors.includes(cand.egyptian)) {
-          distractors.push(cand.egyptian);
-        }
+        if (cand.egyptian !== target.egyptian && !distractors.includes(cand.egyptian)) distractors.push(cand.egyptian);
       }
-      const opts = [target.egyptian, ...distractors].sort(() => Math.random() - 0.5);
       quizQuestions.push({
         prompt: `إيه معنى <span class="de hl-red">${escapeHtml((target.article ? target.article + " " : "") + target.german)}</span> بالعامية المصرية؟`,
-        speak: target.german,
-        options: opts,
+        speak: getFullSpeakText(target),
+        options: [target.egyptian, ...distractors].sort(() => Math.random() - 0.5),
         answer: target.egyptian
       });
     }
@@ -1090,14 +1570,14 @@ function generateQuiz() {
 function renderQuizQuestion() {
   const area = document.getElementById("quizArea");
   if (quizPos >= quizQuestions.length) {
+    if (quizScore >= 8) launchConfetti();
     const msg = quizScore >= 8 ? "🔥 جامد جداً! إنت مسيطر على الوحدتين!" : quizScore >= 5 ? "👏 حلو أوي! راجع شوية كمان وهتقفلها." : "💪 بداية كويسة! راجع القاموس وجرب تاني.";
     area.innerHTML = `
       <div style="text-align:center; padding:24px 10px;">
         <div style="font-size:2.4rem; font-weight:800; color:var(--primary);">${quizScore} / ${quizQuestions.length}</div>
         <p style="font-size:1.05rem; font-weight:700;">${msg}</p>
-        <button type="button" class="btn btn-primary" onclick="generateQuiz()">🔄 ابدأ اختبار جديد</button>
-      </div>
-    `;
+        <button type="button" class="btn btn-primary" onclick="generateQuiz()">🔄 ابدأ تدريب جديد</button>
+      </div>`;
     return;
   }
 
@@ -1121,8 +1601,7 @@ function renderQuizQuestion() {
 
   area.querySelectorAll(".quiz-option").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const picked = btn.dataset.opt;
-      const ok = picked === q.answer;
+      const ok = btn.dataset.opt === q.answer;
       if (ok) {
         quizScore++;
         const scEl = document.getElementById("quizScoreNum");
@@ -1148,7 +1627,7 @@ document.addEventListener("click", (e) => {
   const spk = e.target.closest("[data-speak]");
   if (spk) {
     e.stopPropagation();
-    speakGerman(spk.dataset.speak);
+    speakGerman(spk.dataset.speak, spk);
     return;
   }
 
@@ -1164,7 +1643,8 @@ document.addEventListener("click", (e) => {
 
 // ==================== تشغيل التطبيق ====================
 document.addEventListener("DOMContentLoaded", () => {
-  initTheme();
+  initSplash();
+  initHeaderControls();
   initTabs();
   renderSummary();
   renderUnit("unit1", "unit1Mount");
@@ -1172,6 +1652,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initNumberConverter();
   initVocab();
   initExercises();
+  initExams();
   initFlashcards();
   document.getElementById("quizTypeSelect").addEventListener("change", generateQuiz);
   generateQuiz();

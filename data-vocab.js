@@ -473,5 +473,24 @@ const VOCAB_DATA = [
   { german: "Form", article: "die", pluralOrForm: "-en", egyptian: "صيغة / شكل", unit: 2, ref: "2/3c", category: "قواعد وكلمات عامة", core: false, example: "" },
   { german: "Infinitiv", article: "der", pluralOrForm: "-e", egyptian: "المصدر (أصل الفعل قبل التصريف)", unit: 2, ref: "2/3c", category: "قواعد وكلمات عامة", core: false, example: "" },
   { german: "Ja-/Nein-Frage", article: "die", pluralOrForm: "-n", egyptian: "سؤال بهل (إجابته آه أو لأ)", unit: 2, ref: "2/5b", category: "قواعد وكلمات عامة", core: false, example: "" },
-  { german: "Satzmelodie", article: "die", pluralOrForm: "-n", egyptian: "نغمة الجملة (تطلع ↗ ولا تنزل ↘ في الآخر)", unit: 2, ref: "2/4c", category: "قواعد وكلمات عامة", core: false, example: "" }
+  { german: "Satzmelodie", article: "die", pluralOrForm: "-n", egyptian: "نغمة الجملة (تطلع ↗ ولا تنزل ↘ في الآخر)", unit: 2, ref: "2/4c", category: "قواعد وكلمات عامة", core: false, example: "" },
+
+  // ==================== كلمات إضافية من كتاب التمارين (Übungsbuch ص 6–29) ====================
+  { german: "auswendig", article: null, pluralOrForm: "", egyptian: "عن ظهر قلب / حفظ صم", unit: 1, ref: "1/2d ÜB", category: "قواعد وكلمات عامة", core: false, example: "Lernen Sie wichtige Fragen auswendig. — احفظ الأسئلة المهمة صم." },
+  { german: "Kanada", article: null, pluralOrForm: "", egyptian: "كندا", unit: 1, ref: "1/8b ÜB", category: "دول ولغات", core: false, example: "" },
+  { german: "Tunesien", article: null, pluralOrForm: "", egyptian: "تونس", unit: 1, ref: "1/8b ÜB", category: "دول ولغات", core: false, example: "" },
+  { german: "Neuseeland", article: null, pluralOrForm: "", egyptian: "نيوزيلندا", unit: 1, ref: "1/8b ÜB", category: "دول ولغات", core: false, example: "" },
+  { german: "Ungarn", article: null, pluralOrForm: "", egyptian: "المجر (هنغاريا)", unit: 1, ref: "1/8b ÜB", category: "دول ولغات", core: false, example: "" },
+  { german: "Griechisch", article: null, pluralOrForm: "", egyptian: "يوناني / اللغة اليونانية", unit: 1, ref: "1/8b ÜB", category: "دول ولغات", core: false, example: "" },
+  { german: "Thai", article: null, pluralOrForm: "", egyptian: "تايلاندي / لغة تايلاند", unit: 1, ref: "1/8b ÜB", category: "دول ولغات", core: false, example: "" },
+  { german: "Irak", article: "der", pluralOrForm: "Sg.", egyptian: "العراق (مذكر: aus dem Irak)", unit: 1, ref: "1/8c ÜB", category: "دول ولغات", core: false, example: "Er kommt aus dem Irak. — هو من العراق." },
+  { german: "Iran", article: "der", pluralOrForm: "Sg.", egyptian: "إيران (مذكر: aus dem Iran)", unit: 1, ref: "1/8c ÜB", category: "دول ولغات", core: false, example: "aus dem Iran — من إيران" },
+  { german: "Libanon", article: "der", pluralOrForm: "Sg.", egyptian: "لبنان (مذكر: aus dem Libanon)", unit: 1, ref: "1/8c ÜB", category: "دول ولغات", core: false, example: "aus dem Libanon — من لبنان" },
+  { german: "Jemen", article: "der", pluralOrForm: "Sg.", egyptian: "اليمن (مذكر: aus dem Jemen)", unit: 1, ref: "1/8c ÜB", category: "دول ولغات", core: false, example: "aus dem Jemen — من اليمن" },
+  { german: "Niederlande", article: "die (Pl.)", pluralOrForm: "Pl.", egyptian: "هولندا (جمع: aus den Niederlanden)", unit: 1, ref: "1/8c ÜB", category: "دول ولغات", core: false, example: "aus den Niederlanden — من هولندا" },
+  { german: "Arbeit", article: "die", pluralOrForm: "-en", egyptian: "الشغل / العمل", unit: 2, ref: "2/11a ÜB", category: "مهن وأدوات شغل", core: true, example: "über Arbeit sprechen — نتكلم عن الشغل" },
+  { german: "Arbeitstag", article: "der", pluralOrForm: "-e", egyptian: "يوم شغل (غير الويك إند)", unit: 2, ref: "2/4b ÜB", category: "أيام ووقت", core: false, example: "Montag bis Freitag sind Arbeitstage. — من الاتنين للجمعة أيام شغل." },
+  { german: "Techniker / -in", article: "der/die", pluralOrForm: "- / -nen", egyptian: "فني / تقني (مهندس فني)", unit: 2, ref: "2/R2 ÜB", category: "مهن وأدوات شغل", core: false, example: "" },
+  { german: "Lösungswort", article: "das", pluralOrForm: "¨-er", egyptian: "الكلمة السرية / كلمة الحل في الكلمات المتقاطعة", unit: 2, ref: "2/5a ÜB", category: "قواعد وكلمات عامة", core: false, example: "" },
+  { german: "Haus", article: "das", pluralOrForm: "¨-er", egyptian: "بيت / منزل (الجمع: die Häuser)", unit: 2, ref: "2/8a ÜB", category: "قواعد وكلمات عامة", core: true, example: "das Haus → die Häuser" }
 ];

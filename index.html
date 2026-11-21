@@ -3,7 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Netzwerk Neu A1 — شرح وملخص وكلمات وتدريبات الوحدة 1 و 2 بالعامية المصرية</title>
+  <title>Netzwerk neu A1 — شرح وملخص وكلمات وتدريبات وامتحانات الوحدة 1 و 2 بالعامية المصرية</title>
+  <meta name="description" content="دليل تفاعلي شامل لأول وحدتين من كتاب Netzwerk neu A1 (الشرح + التمارين + 466 كلمة بالعامية المصرية + امتحانات تقييمية بصوت ألماني أصلي). Created by Eng. Seif Al-Deen." />
+
+  <!-- Open Graph / WhatsApp / Social Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://seif-cyber.github.io/german-A1/" />
+  <meta property="og:title" content="🇩🇪 Netzwerk neu A1 — شرح وكلمات وتدريبات وامتحانات الوحدة 1 و 2" />
+  <meta property="og:description" content="شرح بالعامية المصرية، 466 كلمة بنطق ألماني أصلي، كل تمارين الـ Kursbuch والـ Übungsbuch، ومركز امتحانات تقييمية — Created by Eng. Seif Al-Deen" />
+  <meta property="og:image" content="https://seif-cyber.github.io/german-A1/og-preview.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="675" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="🇩🇪 Netzwerk neu A1 — Kapitel 1 & 2 Interactive Guide" />
+  <meta name="twitter:description" content="شرح بالعامية المصرية، قاموس صوتي ألماني أصلي، تمارين الكتابين، وامتحانات تقييمية — Created by Eng. Seif Al-Deen" />
+  <meta name="twitter:image" content="https://seif-cyber.github.io/german-A1/og-preview.jpg" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -11,42 +27,97 @@
 </head>
 <body>
 
+  <!-- خلفية هادئة متحركة -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+  </div>
+
+  <!-- كانفاس الاحتفال بالنتائج العالية -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- شاشة التحميل الاحترافية بلوجو الكتاب -->
+  <div id="splashScreen" class="splash-screen" role="status" aria-label="جاري تحميل التطبيق">
+    <div class="splash-card">
+      <svg class="splash-logo-svg" viewBox="0 0 360 155" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Netzwerk neu A1 Logo">
+        <defs>
+          <linearGradient id="nwRed" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#e11d48" />
+            <stop offset="100%" stop-color="#9f1239" />
+          </linearGradient>
+          <linearGradient id="nwStripe" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#fbbf24" />
+            <stop offset="50%" stop-color="#f97316" />
+            <stop offset="100%" stop-color="#ef4444" />
+          </linearGradient>
+        </defs>
+        <!-- الشرائط الملونة المميزة لغلاف Netzwerk neu -->
+        <rect x="10" y="10" width="340" height="4" rx="2" fill="url(#nwStripe)" />
+        <rect x="10" y="18" width="290" height="2.5" rx="1.25" fill="#fde047" opacity="0.85" />
+        <!-- جسم لوجو الكتاب -->
+        <rect x="10" y="28" width="340" height="72" rx="14" fill="url(#nwRed)" />
+        <text x="180" y="75" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="38" font-weight="800" letter-spacing="-0.5">Netzwerk neu</text>
+        <!-- شريط المستوى A1 -->
+        <rect x="10" y="108" width="340" height="36" rx="10" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
+        <text x="64" y="133" text-anchor="middle" fill="#fde047" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="22" font-weight="800">A1</text>
+        <line x1="100" y1="115" x2="100" y2="137" stroke="rgba(255,255,255,0.38)" stroke-width="2" />
+        <text x="225" y="131" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="14" font-weight="700">Kurs- &amp; Übungsbuch • Kapitel 1–2</text>
+      </svg>
+      <div class="splash-subtitle">جاري تجهيز الشرح والصوت الألماني الأصلي والامتحانات...</div>
+      <div class="splash-progress-track">
+        <div class="splash-progress-fill"></div>
+      </div>
+    </div>
+    <div class="splash-credit">Created by Eng. Seif Al-Deen</div>
+  </div>
+
   <!-- الهيدر الرئيسي -->
   <header class="hero-header">
     <div class="container">
       <div class="hero-top">
         <div>
-          <span class="brand-badge">🇩🇪 Netzwerk Neu A1 — Kursbuch (Kapitel 1 &amp; 2)</span>
-          <h1>شرح وملخص وكلمات وتدريبات أول وحدتين</h1>
+          <div class="brand-row">
+            <span class="brand-badge">🇩🇪 Netzwerk neu A1 — Kurs- &amp; Übungsbuch</span>
+            <span class="brand-badge">🎧 صوت ألماني أصلي نقي</span>
+          </div>
+          <h1>دليلك التفاعلي لأول وحدتين بالعامية المصرية</h1>
           <p class="hero-subtitle">
-            كل قواعد ومحادثات وأرقام وأبجدية الوحدة الأولى والتانية بالعامية المصرية، مع قاموس شامل لكل كلمات الوحدتين وتدريبات الكتاب التفاعلية والنطق الصوتي.
+            شرح مبسط، ملخصات سريعة، قاموس شامل بنطق ألماني أصلي، كل تمارين كتاب الشرح وكتاب التمارين، ومركز امتحانات تقييمية على نمط جوته.
           </p>
         </div>
         <div class="hero-actions">
+          <button class="icon-btn" id="speedToggle" type="button" title="التحكم في سرعة نطق الصوت الألماني">▶️ النطق: طبيعي (1.0x)</button>
           <button class="icon-btn" id="themeToggle" type="button" title="تغيير المظهر">🌙 الوضع الليلي</button>
-          <button class="icon-btn" onclick="window.print()" type="button" title="طباعة أو حفظ PDF">🖨️ طباعة / PDF</button>
         </div>
       </div>
 
-      <div class="stats-strip" id="heroStats">
-        <div class="stat-pill">📖 الوحدات: <strong>Kapitel 1 &amp; 2 (ص 8–27)</strong></div>
-        <div class="stat-pill">🗂️ إجمالي الكلمات: <strong id="statTotalWords">0</strong></div>
-        <div class="stat-pill">✅ الكلمات المحفوظة: <strong id="statLearnedWords">0</strong></div>
-        <div class="stat-pill">📝 التدريبات التفاعلية: <strong id="statTotalExercises">0</strong></div>
+      <div class="stats-strip">
+        <div class="stat-pill">🗂️ الكلمات: <strong id="statTotalWords">0</strong></div>
+        <div class="stat-pill">✅ حفظت: <strong id="statLearnedWords">0</strong></div>
+        <div class="stat-pill">✍️ التدريبات: <strong id="statTotalExercises">0</strong></div>
+        <div class="stat-pill">🎓 الامتحانات: <strong id="statTotalExams">3</strong></div>
+      </div>
+
+      <div class="hero-progress-wrap">
+        <div class="hero-progress-track">
+          <div class="hero-progress-fill" id="heroProgressFill"></div>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- شريط التنقل بالتبويبات -->
+  <!-- شريط التنقل الزجاجي -->
   <div class="nav-wrapper">
     <div class="container">
       <nav class="tabs-nav" role="tablist" aria-label="أقسام المذاكرة">
-        <button class="tab-btn active" data-tab="summary" role="tab">⚡ الملخص السريع</button>
-        <button class="tab-btn" data-tab="unit1" role="tab">1️⃣ الوحدة الأولى (Guten Tag!)</button>
-        <button class="tab-btn" data-tab="unit2" role="tab">2️⃣ الوحدة التانية (Freunde &amp; Beruf)</button>
-        <button class="tab-btn" data-tab="vocab" role="tab">📚 قاموس الوحدتين الكامل</button>
-        <button class="tab-btn" data-tab="exercises" role="tab">✍️ تدريبات الوحدتين</button>
-        <button class="tab-btn" data-tab="practice" role="tab">🃏 بطاقات حفظ واختبار</button>
+        <button class="tab-btn active" data-tab="summary" role="tab">⚡ الملخص</button>
+        <button class="tab-btn" data-tab="unit1" role="tab">1️⃣ الوحدة الأولى</button>
+        <button class="tab-btn" data-tab="unit2" role="tab">2️⃣ الوحدة التانية</button>
+        <button class="tab-btn" data-tab="vocab" role="tab">📚 القاموس</button>
+        <button class="tab-btn" data-tab="exercises" role="tab">✍️ التدريبات</button>
+        <button class="tab-btn" data-tab="exams" role="tab">🎓 الامتحانات</button>
+        <button class="tab-btn" data-tab="practice" role="tab">🃏 بطاقات واختبار</button>
       </nav>
     </div>
   </div>
@@ -54,7 +125,7 @@
   <!-- المحتوى الرئيسي -->
   <main class="container">
 
-    <!-- 1. تبويب الملخص السريع -->
+    <!-- 1. الملخص -->
     <section id="tab-summary" class="tab-panel active">
       <div class="legend-bar">
         <strong>🎨 دليل ألوان الأدوات (استراتيجية الكتاب ص 24):</strong>
@@ -63,32 +134,31 @@
         <span class="art-badge art-die">die = مؤنث (أحمر)</span>
         <span class="art-badge art-pl">die (Pl.) = جمع (بنفسجي)</span>
         <span class="art-badge art-verb">Verb = فعل</span>
-        <span>🔊 اضغط على زرار الصوت جنب أي كلمة ألماني عشان تسمع نطقها!</span>
+        <span>🔊 كل زراير الصوت شغالة بأكسنت ألماني أصلي (وجرب سرعة 0.75x لو عايز تسمع بالراحة!).</span>
       </div>
-
       <div id="summaryMount"></div>
     </section>
 
-    <!-- 2. تبويب الوحدة الأولى -->
+    <!-- 2. الوحدة الأولى -->
     <section id="tab-unit1" class="tab-panel">
       <div id="unit1Mount"></div>
     </section>
 
-    <!-- 3. تبويب الوحدة التانية -->
+    <!-- 3. الوحدة التانية -->
     <section id="tab-unit2" class="tab-panel">
       <div id="unit2Mount"></div>
     </section>
 
-    <!-- 4. تبويب القاموس الشامل -->
+    <!-- 4. القاموس -->
     <section id="tab-vocab" class="tab-panel">
       <div class="unit-banner">
         <h2>📚 قاموس الوحدتين الكامل (ألماني ← عامية مصرية)</h2>
-        <p>كل كلمة وردت في الوحدة الأولى والتانية في صفحات الكتاب (ص 8–27) وملحق الكلمات الرسمي في آخر الكتاب (Alphabetische Wortliste ص 162–174) مع الأداة والجمع والنطق الصوتي.</p>
+        <p>كل كلمات الوحدة 1 و 2 من كتاب الشرح (`Kursbuch` + `Alphabetische Wortliste`) وكتاب التمارين (`Übungsbuch`) بنطق ألماني أصلي نقي.</p>
       </div>
 
       <div class="card">
         <div class="vocab-controls">
-          <input type="search" id="vocabSearch" class="input-field" placeholder="🔍 ابحث بالألماني أو بالعامية المصرية (مثلاً: Arzt أو دكتور أو فوطة)..." />
+          <input type="search" id="vocabSearch" class="input-field" placeholder="🔍 ابحث بالألماني أو بالعامية (مثلاً: Arzt أو دكتور أو فوطة)..." />
           <select id="vocabUnitFilter" aria-label="تصفية بالوحدة">
             <option value="all">كل الوحدتين (1 و 2)</option>
             <option value="1">الوحدة الأولى فقط (Kapitel 1)</option>
@@ -110,8 +180,8 @@
 
         <div class="vocab-toggles">
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button type="button" class="chip-toggle" id="coreOnlyToggle">⭐ كلمات امتحان Start Deutsch 1 الأساسية فقط</button>
-            <button type="button" class="chip-toggle" id="unlearnedToggle">📌 الكلمات اللي لسه محفظتهاش فقط</button>
+            <button type="button" class="chip-toggle" id="coreOnlyToggle">⭐ كلمات امتحان Start Deutsch 1 فقط</button>
+            <button type="button" class="chip-toggle" id="unlearnedToggle">📌 اللي لسه محفظتهاش فقط</button>
           </div>
           <div id="vocabCountLabel" style="font-weight:700; color:var(--text-muted);"></div>
         </div>
@@ -120,26 +190,43 @@
       </div>
     </section>
 
-    <!-- 5. تبويب التدريبات التفاعلية -->
+    <!-- 5. التدريبات (Kursbuch + Übungsbuch) -->
     <section id="tab-exercises" class="tab-panel">
       <div class="unit-banner">
-        <h2>✍️ تدريبات الوحدتين التفاعلية (الكتاب + تدريبات إضافية)</h2>
-        <p>حل تدريبات الوحدة الأولى والتانية مباشرة هنا، اضغط "تحقق من إجابتك" عشان تعرف درجتك فوراً، أو اضغط "إظهار الحل والشرح" عشان تفهم سبب كل إجابة بالعامية المصرية.</p>
+        <h2>✍️ تدريبات الوحدتين التفاعلية (كتاب الشرح + كتاب التمارين)</h2>
+        <p>كل تمارين <strong>Kursbuch</strong> و <strong>Übungsbuch</strong> للوحدة الأولى والتانية قابلة للحل مباشرة مع تصحيح فوري وشرح كل إجابة بالعامية المصرية!</p>
       </div>
 
-      <div class="ex-filter-bar">
-        <button class="btn btn-primary ex-unit-btn" data-exunit="all">كل التدريبات</button>
-        <button class="btn btn-secondary ex-unit-btn" data-exunit="1">تدريبات الوحدة الأولى (1)</button>
-        <button class="btn btn-secondary ex-unit-btn" data-exunit="2">تدريبات الوحدة التانية (2)</button>
+      <div class="ex-filter-panel">
+        <div class="ex-filter-group">
+          <strong>📘 الكتاب:</strong>
+          <button class="btn btn-primary ex-src-btn" data-exsrc="all">الكل</button>
+          <button class="btn btn-secondary ex-src-btn" data-exsrc="ub">كتاب التمارين (Übungsbuch)</button>
+          <button class="btn btn-secondary ex-src-btn" data-exsrc="kb">كتاب الشرح (Kursbuch)</button>
+        </div>
+        <div class="ex-filter-group">
+          <strong>📂 الوحدة:</strong>
+          <button class="btn btn-primary ex-unit-btn" data-exunit="all">الوحدتين</button>
+          <button class="btn btn-secondary ex-unit-btn" data-exunit="1">الوحدة 1</button>
+          <button class="btn btn-secondary ex-unit-btn" data-exunit="2">الوحدة 2</button>
+        </div>
       </div>
 
       <div id="exercisesMount"></div>
     </section>
 
-    <!-- 6. تبويب البطاقات والاختبار السريع -->
+    <!-- 6. مركز الامتحانات التقييمية -->
+    <section id="tab-exams" class="tab-panel">
+      <div class="unit-banner">
+        <h2>🎓 مركز الامتحانات التقييمية (Start Deutsch 1 / Kapiteltests)</h2>
+        <p>اختبر مستواك الحقيقي بامتحانات متكاملة (استماع بالصوت الألماني الأصلي + قراءة + قواعد وأدوات + مواقف وكلمات) مع مؤقت اختياري وتقرير مفصل بنقاط قوتك وضعفك ومراجعة الأخطاء.</p>
+      </div>
+      <div id="examsMount"></div>
+    </section>
+
+    <!-- 7. البطاقات والاختبار السريع -->
     <section id="tab-practice" class="tab-panel">
       <div class="grid-2">
-        <!-- Flashcards -->
         <div class="card">
           <div class="section-header">
             <h3>🃏 بطاقات الحفظ (Flashcards)</h3>
@@ -158,7 +245,7 @@
                 <div id="fcFrontBadge"></div>
                 <div class="fc-main-word" id="fcGerman">...</div>
                 <div id="fcPlural" style="color:var(--text-muted); font-family:'Plus Jakarta Sans',sans-serif;"></div>
-                <button type="button" class="btn btn-secondary" id="fcSpeakBtn" style="margin-top:6px;">🔊 اسمع النطق</button>
+                <button type="button" class="btn btn-secondary" id="fcSpeakBtn" style="margin-top:6px;">🔊 اسمع النطق الأصلي</button>
               </div>
               <div class="fc-face fc-back">
                 <div style="font-size:0.85rem; color:var(--primary); font-weight:800;">المعنى بالعامية المصرية</div>
@@ -178,10 +265,9 @@
           <div id="fcCounter" style="text-align:center; margin-top:10px; font-weight:700; color:var(--text-muted);"></div>
         </div>
 
-        <!-- Quick Quiz -->
         <div class="card">
           <div class="section-header">
-            <h3>🎯 اختبار سريع عشوائي (10 أسئلة)</h3>
+            <h3>🎯 تدريب سريع (10 أسئلة عشوائية)</h3>
             <select id="quizTypeSelect" aria-label="نوع الاختبار">
               <option value="mixed">شامل (معاني + أدوات)</option>
               <option value="meaning">معاني الكلمات بالعامية</option>
@@ -196,14 +282,18 @@
   </main>
 
   <footer>
-    <div class="container">
-      مبني بالكامل من كتاب <strong>Netzwerk Neu A1 — Kursbuch</strong> (الوحدة 1 و 2 + Alphabetische Wortliste) — بالعامية المصرية عشان تذاكر ألماني بمزاج 🇩🇪🇪🇬
+    <div class="container footer-inner">
+      <div>مبني بالكامل من كتابي <strong>Netzwerk neu A1 (Kursbuch &amp; Übungsbuch)</strong> — بالعامية المصرية 🇩🇪🇪🇬</div>
+      <div class="creator-credit">Created by Eng. Seif Al-Deen</div>
     </div>
   </footer>
 
+  <script src="audio-manifest.js"></script>
   <script src="data-vocab.js"></script>
   <script src="data-units.js"></script>
   <script src="data-exercises.js"></script>
+  <script src="data-exercises-ub.js"></script>
+  <script src="data-exams.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
