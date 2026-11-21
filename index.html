@@ -35,8 +35,34 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Critical inline splash styles so mobile paints Splash Screen immediately on Frame 0 */
+    body.splash-lock { overflow: hidden; }
+    #splashScreen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      z-index: 99999;
+      background: radial-gradient(circle at 20% 20%, #b90e2b 0%, #6f081b 45%, #0b1120 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      opacity: 1;
+      visibility: visible;
+    }
+    #splashScreen.hide {
+      opacity: 0;
+      transform: scale(1.05);
+      visibility: hidden;
+      pointer-events: none;
+    }
+  </style>
 </head>
-<body>
+<body class="splash-lock">
 
   <!-- خلفية هادئة متحركة -->
   <div class="ambient-bg" aria-hidden="true">

@@ -278,10 +278,28 @@ function updateHeroStats() {
 // ==================== شاشة التحميل، السرعة، المظهر، والتبويبات ====================
 function initSplash() {
   const splash = document.getElementById("splashScreen");
-  if (!splash) return;
-  const dismiss = () => splash.classList.add("hide");
-  setTimeout(dismiss, 1250);
-  splash.addEventListener("click", dismiss);
+  if (!splash) {
+    document.body.classList.remove("splash-lock");
+    return;
+  }
+  let dismissed = false;
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
+    splash.classList.add("hide");
+    document.body.classList.remove("splash-lock");
+  };
+  // نسمح بإغلاقها بالضغط فقط بعد 500ms عشان متتقفلش بلمسة غير مقصودة على الموبايل
+  setTimeout(() => {
+    splash.addEventListener("click", dismiss, { once: true });
+  }, 500);
+
+  // نبدأ العدّاد بعد ما المتصفح يرسم الـ Splash Screen فعلياً على الشاشة
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      setTimeout(dismiss, 1600);
+    });
+  });
 }
 
 function initHeaderControls() {
@@ -1815,19 +1833,32 @@ function initPWA() {
 
 // ==================== تشغيل التطبيق ====================
 document.addEventListener("DOMContentLoaded", () => {
-  initSplash();
+  // أمان إضافي: مستحيل شاشة التحميل تعلق مهما حصل
+  setTimeout(() => {
+    document.getElementById("splashScreen")?.classList.add("hide");
+    document.body.classList.remove("splash-lock");
+  }, 4500);
+
+  // 1. نرسم شاشة التحميل ونجهّز التحكم الأساسي فوراً بدون تعطيل الرسم الأول على الموبايل
   initHeaderControls();
   initPWA();
   initTabs();
   renderSummary();
-  renderUnit("unit1", "unit1Mount");
-  renderUnit("unit2", "unit2Mount");
-  initNumberConverter();
-  initVocab();
-  initExercises();
-  initExams();
-  initFlashcards();
-  document.getElementById("quizTypeSelect").addEventListener("change", generateQuiz);
-  generateQuiz();
   updateHeroStats();
+
+  // 2. نؤجل بناء القاموس والتمارين والامتحانات فريم واحد عشان شاشة التحميل تظهر بسلاسة تامة على الموبايل
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      renderUnit("unit1", "unit1Mount");
+      renderUnit("unit2", "unit2Mount");
+      initNumberConverter();
+      initVocab();
+      initExercises();
+      initExams();
+      initFlashcards();
+      document.getElementById("quizTypeSelect").addEventListener("change", generateQuiz);
+      generateQuiz();
+      initSplash();
+    }, 60);
+  });
 });

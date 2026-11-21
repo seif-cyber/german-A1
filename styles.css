@@ -137,35 +137,40 @@ body {
 /* ==================== شاشة التحميل الاحترافية (Splash Screen) ==================== */
 .splash-screen {
   position: fixed;
-  inset: 0;
-  z-index: 9999;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 99999;
   background: radial-gradient(circle at 20% 20%, #b90e2b 0%, #6f081b 45%, #0b1120 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #fff;
-  transition: opacity 0.6s var(--ease-spring), transform 0.6s var(--ease-spring), visibility 0.6s;
+  padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 16px);
+  transition: opacity 0.55s var(--ease-spring), transform 0.55s var(--ease-spring), visibility 0.55s;
 }
 
 .splash-screen.hide {
   opacity: 0;
-  transform: scale(1.06);
+  transform: scale(1.05);
   visibility: hidden;
   pointer-events: none;
 }
 
 .splash-card {
   text-align: center;
-  padding: 36px 40px;
+  padding: 34px 36px;
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
   max-width: 440px;
-  width: 90%;
-  animation: splashPop 0.7s var(--ease-spring) both;
+  width: 92%;
+  animation: splashPop 0.65s var(--ease-spring) both;
 }
 
 @keyframes splashPop {
@@ -201,7 +206,7 @@ body {
   width: 0%;
   border-radius: 999px;
   background: linear-gradient(90deg, #fbbf24, #fb7185, #fde047);
-  animation: splashLoad 1.25s var(--ease-spring) forwards;
+  animation: splashLoad 1.55s var(--ease-spring) forwards;
 }
 
 @keyframes splashLoad {
