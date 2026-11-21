@@ -314,6 +314,7 @@ function initHeaderControls() {
 function switchTab(tabId) {
   document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === tabId));
   document.querySelectorAll(".tab-panel").forEach((p) => p.classList.toggle("active", p.id === `tab-${tabId}`));
+  syncFloatingTimerVisibility(tabId);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -1253,10 +1254,33 @@ function initExams() {
   renderExamHub();
 }
 
+function syncFloatingTimerVisibility(tabId) {
+  const ft = document.getElementById("floatingExamTimer");
+  if (!ft) return;
+  const onExamsTab = tabId ? tabId === "exams" : document.getElementById("tab-exams")?.classList.contains("active");
+  ft.hidden = !(activeExam && examUseTimer && examTimerInterval && onExamsTab);
+}
+
+function updateFloatingTimerUI(timeStr) {
+  const ft = document.getElementById("floatingExamTimer");
+  const tEl = document.getElementById("ftTimeDisp");
+  const pEl = document.getElementById("ftProgDisp");
+  if (!ft || !tEl || !pEl || !activeExam) return;
+  if (timeStr) tEl.textContent = timeStr;
+  pEl.textContent = `${Object.keys(examAnswers).length}/${activeExam.questions.length}`;
+  ft.classList.toggle("warn", examSecondsLeft > 60 && examSecondsLeft <= 180);
+  ft.classList.toggle("danger", examSecondsLeft <= 60);
+}
+
 function stopExamTimer() {
   if (examTimerInterval) {
     clearInterval(examTimerInterval);
     examTimerInterval = null;
+  }
+  const ft = document.getElementById("floatingExamTimer");
+  if (ft) {
+    ft.hidden = true;
+    ft.classList.remove("warn", "danger");
   }
 }
 
@@ -1384,6 +1408,7 @@ function startExam(examId) {
       lbl.classList.add("selected");
       lbl.querySelector("input").checked = true;
       document.getElementById("examAnsweredCounter").textContent = `جاوبت على ${Object.keys(examAnswers).length} من ${activeExam.questions.length} سؤال`;
+      updateFloatingTimerUI();
     });
   });
 
@@ -1392,14 +1417,19 @@ function startExam(examId) {
 
   if (examUseTimer) {
     examSecondsLeft = activeExam.durationMin * 60;
+    const initStr = `${String(activeExam.durationMin).padStart(2, "0")}:00`;
+    updateFloatingTimerUI(initStr);
     examTimerInterval = setInterval(() => {
       examSecondsLeft--;
       const m = Math.floor(examSecondsLeft / 60);
       const s = examSecondsLeft % 60;
+      const str = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
       const disp = document.getElementById("examTimerDisp");
-      if (disp) disp.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      if (disp) disp.textContent = str;
+      updateFloatingTimerUI(str);
       if (examSecondsLeft <= 0) submitExam();
     }, 1000);
+    syncFloatingTimerVisibility("exams");
   }
 
   window.scrollTo({ top: 0, behavior: "smooth" });

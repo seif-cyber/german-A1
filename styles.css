@@ -1002,6 +1002,53 @@ tr:hover td { background: rgba(200, 16, 46, 0.03); }
   color: var(--primary);
 }
 
+/* تايمر الامتحان العائم أسفل اليسار */
+.floating-exam-timer {
+  position: fixed;
+  bottom: 18px;
+  left: 18px;
+  z-index: 900;
+  direction: ltr;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(12px);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 800;
+  font-size: 0.98rem;
+  animation: splashPop 0.32s var(--ease-spring) both;
+}
+.floating-exam-timer[hidden] { display: none !important; }
+.floating-exam-timer .ft-time::before { content: "⏱️ "; }
+.floating-exam-timer .ft-sep { opacity: 0.4; }
+.floating-exam-timer .ft-prog { font-size: 0.85rem; color: #fde68a; }
+
+.floating-exam-timer.warn {
+  background: linear-gradient(135deg, #b45309, #ea580c);
+  border-color: #fde68a;
+}
+
+.floating-exam-timer.danger {
+  background: linear-gradient(135deg, #b91c1c, #e11d48);
+  border-color: #fecdd3;
+  animation: pulseAudio 1s ease-out infinite;
+}
+
+@media (max-width: 680px) {
+  .floating-exam-timer {
+    bottom: 14px;
+    left: 14px;
+    padding: 8px 13px;
+    font-size: 0.9rem;
+  }
+}
+
 .exam-audio-box {
   display: flex;
   align-items: center;
