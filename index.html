@@ -7,9 +7,15 @@
   <meta name="description" content="الدليل التفاعلي الشامل لكتاب Netzwerk neu A1 (الشرح بالعامية المصرية + القاموس الصوتي بنطق ألماني أصلي + تمارين الـ Kursbuch والـ Übungsbuch + مركز الامتحانات التقييمية). Created by Eng. Seif Al-Deen." />
   <meta name="theme-color" content="#c8102e" />
 
-  <!-- أيقونة الصفحة (Favicon) -->
+  <!-- أيقونة الصفحة + إعدادات التثبيت PWA (أندرويد وآيفون) -->
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="apple-touch-icon" href="favicon.svg" />
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Netzwerk A1" />
+  <meta name="mobile-web-app-capable" content="yes" />
 
   <!-- Open Graph / WhatsApp / Social Preview -->
   <meta property="og:type" content="website" />
@@ -89,6 +95,7 @@
           </p>
         </div>
         <div class="hero-actions">
+          <button class="icon-btn install-cta-btn" id="headerInstallBtn" type="button" title="ثبّت التطبيق على موبايلك أو جهازك">📲 تثبيت التطبيق</button>
           <button class="icon-btn" id="speedToggle" type="button" title="التحكم في سرعة نطق الصوت الألماني">▶️ النطق: طبيعي (1.0x)</button>
           <button class="icon-btn" id="themeToggle" type="button" title="تغيير المظهر">🌙 الوضع الليلي</button>
         </div>
@@ -133,6 +140,23 @@
 
   <!-- المحتوى الرئيسي -->
   <main class="container">
+
+    <!-- رسالة تثبيت التطبيق على الموبايل (آيفون وأندرويد) -->
+    <div id="installBanner" class="install-banner" role="region" aria-label="تثبيت التطبيق" hidden>
+      <div class="install-banner-content">
+        <img src="icons/icon-192.png" alt="Netzwerk A1" class="install-banner-icon" />
+        <div>
+          <strong class="install-banner-title">📲 ثبّت التطبيق على موبايلك (آيفون أو أندرويد)</strong>
+          <div class="install-banner-text" id="installBannerText">
+            عشان تفتحه زي أي تطبيق بسرعة، وتقدّمك في حفظ الكلمات ودرجات امتحاناتك تتحفظ دايماً على موبايلك!
+          </div>
+        </div>
+      </div>
+      <div class="install-banner-actions">
+        <button type="button" class="btn btn-primary" id="bannerInstallBtn">📲 تثبيت الآن</button>
+        <button type="button" class="btn btn-secondary" id="bannerDismissBtn" aria-label="إغلاق">لاحقاً</button>
+      </div>
+    </div>
 
     <!-- 1. الملخص -->
     <section id="tab-summary" class="tab-panel active">
@@ -289,6 +313,52 @@
     </section>
 
   </main>
+
+  <!-- نافذة خطوات التثبيت للآيفون والأندرويد -->
+  <div id="installModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="installModalTitle" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="installModalTitle" style="margin:0;">📲 تثبيت تطبيق Netzwerk A1 على موبايلك</h3>
+        <button type="button" class="modal-close-btn" id="closeInstallModal" aria-label="إغلاق">✕</button>
+      </div>
+      <p style="margin:6px 0 14px; color:var(--text-muted); font-size:0.92rem;">
+        لما تثبّت التطبيق على الشاشة الرئيسية، بيفتح بشاشة كاملة بدون شريط المتصفح، وكمان <strong>تقدّمك في حفظ الكلمات ودرجاتك بتفضل محفوظة على موبايلك</strong> وتقدر تذاكر بسرعة في أي وقت!
+      </p>
+
+      <div class="install-os-tabs">
+        <button type="button" class="btn btn-primary" id="osTabIos">🍎 آيفون / iPad</button>
+        <button type="button" class="btn btn-secondary" id="osTabAndroid">🤖 أندرويد / Chrome</button>
+      </div>
+
+      <div id="installStepsIos" class="install-steps-box">
+        <ol class="install-steps-list">
+          <li>لو فاتح الرابط من جوه <strong>واتساب</strong>، اضغط الأول على أيقونة البوصلة <strong>Safari 🧭</strong> تحت عشان يفتح في سفاري.</li>
+          <li>في متصفح <strong>Safari</strong>، اضغط على زرار المشاركة <strong>Share ⬆️</strong> (المربع اللي طالع منه سهم في الشريط تحت).</li>
+          <li>انزل شوية في القائمة واختار <strong>«إضافة إلى الشاشة الرئيسية» (Add to Home Screen ➕)</strong>.</li>
+          <li>اضغط <strong>«إضافة» (Add)</strong> فوق — وهتلاقي أيقونة <strong>Netzwerk A1</strong> نزلت على شاشة موبايلك!</li>
+        </ol>
+      </div>
+
+      <div id="installStepsAndroid" class="install-steps-box" hidden>
+        <div id="nativeInstallWrap" style="margin-bottom:12px;" hidden>
+          <button type="button" class="btn btn-primary" id="modalNativeInstallBtn" style="width:100%; justify-content:center; padding:12px;">
+            ⚡ تثبيت التطبيق بضغطة واحدة الآن
+          </button>
+        </div>
+        <ol class="install-steps-list">
+          <li>افتح الرابط في متصفح <strong>Google Chrome</strong> أو <strong>Edge</strong>.</li>
+          <li>اضغط على التلات نقط <strong>⋮</strong> (القائمة فوق على اليمين أو الشمال).</li>
+          <li>اختار <strong>«تثبيت التطبيق» (Install app)</strong> أو <strong>«إضافة إلى الشاشة الرئيسية» (Add to Home screen)</strong>.</li>
+          <li>اضغط <strong>«تثبيت» (Install)</strong> وهينزل التطبيق فوراً على موبايلك!</li>
+        </ol>
+      </div>
+
+      <div class="callout info" style="margin:12px 0 0; font-size:0.86rem;">
+        <strong>💡 ملحوظة مهمة لحفظ التقدّم:</strong>
+        كل الكلمات اللي بتدوس عليها <strong>«حفظتها ✅»</strong> ودرجات امتحاناتك بتتحفظ تلقائياً في ذاكرة التطبيق على موبايلك (بدون حساب أو تسجيل دخول!).
+      </div>
+    </div>
+  </div>
 
   <footer>
     <div class="container footer-inner">

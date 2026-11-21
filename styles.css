@@ -1161,6 +1161,141 @@ footer {
   transform: translateY(-2px);
 }
 
+/* ==================== بانر ونافذة تثبيت التطبيق (PWA Install) ==================== */
+.install-cta-btn {
+  background: rgba(250, 204, 21, 0.22);
+  border-color: rgba(253, 224, 71, 0.65);
+  color: #fef9c3;
+}
+.install-cta-btn:hover {
+  background: rgba(250, 204, 21, 0.34);
+}
+
+.install-banner {
+  background: linear-gradient(135deg, var(--primary-soft), var(--surface));
+  border: 1.5px solid rgba(200, 16, 46, 0.28);
+  border-radius: 18px;
+  padding: 15px 18px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+  animation: revealUp 0.4s var(--ease-spring) both;
+}
+.install-banner[hidden] { display: none !important; }
+
+.install-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex: 1 1 260px;
+}
+
+.install-banner-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.28);
+}
+
+.install-banner-title {
+  display: block;
+  font-size: 0.98rem;
+  color: var(--primary);
+  margin-bottom: 2px;
+}
+
+.install-banner-text {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.install-banner-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeInBg 0.22s ease;
+}
+.modal-backdrop[hidden] { display: none !important; }
+
+@keyframes fadeInBg {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 22px;
+  max-width: 490px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: splashPop 0.3s var(--ease-spring) both;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-close-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.modal-close-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+.install-os-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.install-os-tabs .btn { flex: 1; justify-content: center; }
+
+.install-steps-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.install-steps-list {
+  margin: 0;
+  padding-right: 20px;
+  font-size: 0.92rem;
+}
+.install-steps-list li { margin-bottom: 8px; }
+.install-steps-list li:last-child { margin-bottom: 0; }
+
 /* ==================== تحسينات تجربة الموبايل (Mobile-First Polish) ==================== */
 .table-wrap { -webkit-overflow-scrolling: touch; }
 .ex-select, select { max-width: 100%; }

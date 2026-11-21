@@ -1,0 +1,33 @@
+{
+  "name": "Netzwerk neu A1 — الدليل التفاعلي بالعامية المصرية",
+  "short_name": "Netzwerk A1",
+  "description": "شرح وملخص وقاموس صوتي ألماني أصلي وتمارين وامتحانات لكتاب Netzwerk neu A1 بالعامية المصرية.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "ar",
+  "theme_color": "#c8102e",
+  "background_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

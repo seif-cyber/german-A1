@@ -1641,10 +1641,128 @@ document.addEventListener("click", (e) => {
   }
 });
 
+// ==================== تثبيت التطبيق كـ PWA (أندرويد وآيفون والكمبيوتر) ====================
+let deferredInstallPrompt = null;
+const STORAGE_KEY_INSTALL_DISMISS = "netzwerk_a1_install_dismiss_v1";
+
+function isStandaloneMode() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function isIosDevice() {
+  const ua = window.navigator.userAgent || "";
+  return /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function initPWA() {
+  // تسجيل Service Worker على http/https فقط
+  if ("serviceWorker" in navigator && /^https?:$/.test(window.location.protocol)) {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  }
+
+  const banner = document.getElementById("installBanner");
+  const headerBtn = document.getElementById("headerInstallBtn");
+  const bannerBtn = document.getElementById("bannerInstallBtn");
+  const dismissBtn = document.getElementById("bannerDismissBtn");
+  const modal = document.getElementById("installModal");
+  const closeModalBtn = document.getElementById("closeInstallModal");
+  const osTabIos = document.getElementById("osTabIos");
+  const osTabAndroid = document.getElementById("osTabAndroid");
+  const stepsIos = document.getElementById("installStepsIos");
+  const stepsAndroid = document.getElementById("installStepsAndroid");
+  const nativeWrap = document.getElementById("nativeInstallWrap");
+  const nativeBtn = document.getElementById("modalNativeInstallBtn");
+
+  // لو التطبيق مفتوح بالفعل كتطبيق مثبّت، نخفي رسالة وزرار التثبيت
+  if (isStandaloneMode()) {
+    if (headerBtn) headerBtn.style.display = "none";
+    if (banner) banner.hidden = true;
+    return;
+  }
+
+  // إظهار بانر التثبيت ما لم يكن المستخدم ضغط "لاحقاً" خلال آخر 3 أيام
+  const dismissedAt = Number(localStorage.getItem(STORAGE_KEY_INSTALL_DISMISS) || "0");
+  const threeDays = 3 * 24 * 60 * 60 * 1000;
+  if (banner && (!dismissedAt || Date.now() - dismissedAt > threeDays)) {
+    banner.hidden = false;
+  }
+
+  function selectOsTab(os) {
+    const showIos = os === "ios";
+    stepsIos.hidden = !showIos;
+    stepsAndroid.hidden = showIos;
+    osTabIos.className = showIos ? "btn btn-primary" : "btn btn-secondary";
+    osTabAndroid.className = showIos ? "btn btn-secondary" : "btn btn-primary";
+  }
+
+  function openInstallModal() {
+    selectOsTab(isIosDevice() ? "ios" : "android");
+    if (nativeWrap) nativeWrap.hidden = !deferredInstallPrompt;
+    modal.hidden = false;
+  }
+
+  function closeInstallModal() {
+    modal.hidden = true;
+  }
+
+  async function triggerInstall() {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      try {
+        const choice = await deferredInstallPrompt.userChoice;
+        if (choice && choice.outcome === "accepted") {
+          if (banner) banner.hidden = true;
+          if (headerBtn) headerBtn.style.display = "none";
+          closeInstallModal();
+          launchConfetti();
+        }
+      } catch (_) {}
+      deferredInstallPrompt = null;
+      if (nativeWrap) nativeWrap.hidden = true;
+    } else {
+      openInstallModal();
+    }
+  }
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if (nativeWrap) nativeWrap.hidden = false;
+    if (bannerBtn) bannerBtn.textContent = "📲 تثبيت الآن (بضغطة واحدة)";
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    if (banner) banner.hidden = true;
+    if (headerBtn) headerBtn.style.display = "none";
+    closeInstallModal();
+    launchConfetti();
+  });
+
+  if (headerBtn) headerBtn.addEventListener("click", triggerInstall);
+  if (bannerBtn) bannerBtn.addEventListener("click", triggerInstall);
+  if (nativeBtn) nativeBtn.addEventListener("click", triggerInstall);
+  if (dismissBtn) {
+    dismissBtn.addEventListener("click", () => {
+      if (banner) banner.hidden = true;
+      localStorage.setItem(STORAGE_KEY_INSTALL_DISMISS, String(Date.now()));
+    });
+  }
+  if (closeModalBtn) closeModalBtn.addEventListener("click", closeInstallModal);
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeInstallModal();
+    });
+  }
+  if (osTabIos) osTabIos.addEventListener("click", () => selectOsTab("ios"));
+  if (osTabAndroid) osTabAndroid.addEventListener("click", () => selectOsTab("android"));
+}
+
 // ==================== تشغيل التطبيق ====================
 document.addEventListener("DOMContentLoaded", () => {
   initSplash();
   initHeaderControls();
+  initPWA();
   initTabs();
   renderSummary();
   renderUnit("unit1", "unit1Mount");
