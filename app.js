@@ -7,6 +7,27 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+function isLtrText(str) {
+  const s = String(str ?? "").trim();
+  return s.length > 0 && !/[\u0600-\u06FF]/.test(s);
+}
+
+// عزل أرقام التليفونات والتواريخ والمدى الرقمي داخل النصوص العربية حتى لا تنعكس في RTL
+function formatBidiText(str) {
+  const safe = escapeHtml(str);
+  return safe
+    .replace(/(\+?\d{2,5}\s*[-–]\s*\d[\d\s-]*\d)/g, '<span class="de" dir="ltr">$1</span>')
+    .replace(/(\b\d{2}\.\d{2}\.\d{4}\b)/g, '<span class="de" dir="ltr">$1</span>')
+    .replace(/(\b\d+\s*[–-]\s*\d+\b)/g, '<span class="ltr-inline" dir="ltr">$1</span>');
+}
+
+function renderValueSpan(str) {
+  if (isLtrText(str)) {
+    return `<span class="de" dir="ltr">${escapeHtml(str)}</span>`;
+  }
+  return formatBidiText(str);
+}
+
 function normalizeText(str) {
   return String(str ?? "")
     .toLowerCase()
@@ -664,7 +685,9 @@ function renderUnit(unitKey, mountId) {
             <tbody>
               ${sec.rows.map((r) => `
                 <tr>
-                  ${r.map((cell, idx) => `<td class="${idx < 2 ? "de" : ""}">${escapeHtml(cell)}</td>`).join("")}
+                  ${r.map((cell) => isLtrText(cell)
+                    ? `<td class="de" dir="ltr">${escapeHtml(cell)}</td>`
+                    : `<td>${formatBidiText(cell)}</td>`).join("")}
                   <td>${speakBtnHtml(r[0])}</td>
                 </tr>
               `).join("")}
@@ -861,11 +884,12 @@ function renderExercises() {
   mount.innerHTML = list.map((ex) => {
     let body = "";
     if (ex.type === "match") {
+      const allLtr = ex.options.every(isLtrText);
       body = ex.items.map((it, idx) => `
         <div class="ex-item" data-ex="${ex.id}" data-idx="${idx}">
           <div class="ex-row">
-            <div><strong>${escapeHtml(it.prompt)}</strong></div>
-            <select class="ex-select" data-ex="${ex.id}" data-idx="${idx}">
+            <div><strong>${formatBidiText(it.prompt)}</strong></div>
+            <select class="ex-select ${allLtr ? "de" : ""}" ${allLtr ? 'dir="ltr"' : ""} data-ex="${ex.id}" data-idx="${idx}">
               <option value="">-- اختار الإجابة --</option>
               ${ex.options.map((opt) => `<option value="${escapeHtml(opt)}">${escapeHtml(opt)}</option>`).join("")}
             </select>
@@ -875,8 +899,9 @@ function renderExercises() {
       `).join("");
     } else if (ex.type === "fill") {
       body = ex.items.map((it, idx) => {
+        const allLtr = it.choices && it.choices.every(isLtrText);
         const control = it.choices
-          ? `<select class="ex-select" data-ex="${ex.id}" data-idx="${idx}">
+          ? `<select class="ex-select ${allLtr ? "de" : ""}" ${allLtr ? 'dir="ltr"' : ""} data-ex="${ex.id}" data-idx="${idx}">
               <option value="">-- اختار --</option>
               ${it.choices.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("")}
             </select>`
@@ -984,11 +1009,11 @@ function renderExercises() {
                 <option value="keine Angabe">keine Angabe (بدون تحديد)</option>
               </select>
             </div>
-            <div class="form-group"><label>Geburtsdatum (تاريخ الميلاد)</label><input class="input-field" name="geburtsdatum" required placeholder="01.04.2000" /></div>
-            <div class="form-group"><label>E-Mail (الإيميل)</label><input class="input-field" type="email" name="email" required placeholder="name@example.com" /></div>
-            <div class="form-group"><label>Telefonnummer (الموبايل)</label><input class="input-field" name="tel" required placeholder="+20 10..." /></div>
-            <div class="form-group"><label>Adresse: Straße, Hausnummer</label><input class="input-field" name="strasse" required placeholder="Tahrirstr. 10" /></div>
-            <div class="form-group"><label>Postleitzahl, Wohnort</label><input class="input-field" name="ort" required placeholder="11511 Kairo" /></div>
+            <div class="form-group"><label>Geburtsdatum (تاريخ الميلاد)</label><input class="input-field de" dir="ltr" name="geburtsdatum" required placeholder="01.04.2000" /></div>
+            <div class="form-group"><label>E-Mail (الإيميل)</label><input class="input-field de" dir="ltr" type="email" name="email" required placeholder="name@example.com" /></div>
+            <div class="form-group"><label>Telefonnummer (الموبايل)</label><input class="input-field de" dir="ltr" name="tel" required placeholder="+20 10..." /></div>
+            <div class="form-group"><label>Adresse: Straße, Hausnummer</label><input class="input-field de" dir="ltr" name="strasse" required placeholder="Tahrirstr. 10" /></div>
+            <div class="form-group"><label>Postleitzahl, Wohnort</label><input class="input-field de" dir="ltr" name="ort" required placeholder="11511 Kairo" /></div>
             <div class="form-group"><label>Kurs (اختار الكورس)</label>
               <select name="kurs" id="clubKursSelect" required>
                 <option value="">-- اختار كورس --</option>
@@ -1119,7 +1144,7 @@ function evaluateExercise(exId, revealOnly) {
         box.classList.remove("wrong");
         box.classList.add("correct");
         fb.className = "ex-feedback show";
-        fb.innerHTML = `💡 الحل: <span class="de">${escapeHtml(it.answer)}</span> — ${escapeHtml(it.explanation)}`;
+        fb.innerHTML = `💡 الحل: <span class="de" dir="ltr">${escapeHtml(it.answer)}</span> — ${formatBidiText(it.explanation)}`;
         correctCount++;
       } else {
         const val = ctrl.value.trim();
@@ -1129,8 +1154,8 @@ function evaluateExercise(exId, revealOnly) {
         box.classList.toggle("wrong", !ok);
         fb.className = "ex-feedback show";
         fb.innerHTML = ok
-          ? `✅ برافو! ${escapeHtml(it.explanation)}`
-          : `❌ الإجابة الصح: <span class="de">${escapeHtml(it.answer)}</span> — ${escapeHtml(it.explanation)}`;
+          ? `✅ برافو! ${formatBidiText(it.explanation)}`
+          : `❌ الإجابة الصح: <span class="de" dir="ltr">${escapeHtml(it.answer)}</span> — ${formatBidiText(it.explanation)}`;
         if (ok) correctCount++;
       }
     });
@@ -1315,13 +1340,13 @@ function startExam(examId) {
       ${sectionHeader}
       ${passageHtml}
       <div class="exam-q-card" id="eq-${idx}">
-        <div style="font-weight:800; margin-bottom:10px;">${idx + 1}. ${escapeHtml(q.prompt)}</div>
+        <div style="font-weight:800; margin-bottom:10px;">${idx + 1}. ${formatBidiText(q.prompt)}</div>
         ${audioHtml}
         <div>
           ${q.options.map((opt) => `
             <label class="exam-opt-label" data-q="${idx}" data-opt="${escapeHtml(opt)}">
               <input type="radio" name="eq_${idx}" value="${escapeHtml(opt)}" style="accent-color:var(--primary);" />
-              <span>${escapeHtml(opt)}</span>
+              ${renderValueSpan(opt)}
             </label>
           `).join("")}
         </div>
@@ -1447,11 +1472,11 @@ function submitExam() {
           : shown.map((d) => `
             <div class="ex-item ${d.ok ? "correct" : "wrong"}">
               <div style="font-weight:800; margin-bottom:6px;">
-                ${d.ok ? "✅" : "❌"} سؤال ${d.idx + 1} (${d.q.section}): ${escapeHtml(d.q.prompt)}
+                ${d.ok ? "✅" : "❌"} سؤال ${d.idx + 1} (${d.q.section}): ${formatBidiText(d.q.prompt)}
                 ${d.q.audioText ? speakBtnHtml(d.q.audioText) : ""}
               </div>
-              <div style="font-size:0.9rem;">إجابتك: <strong>${escapeHtml(d.userAns)}</strong> ${d.ok ? "" : `| الإجابة الصح: <strong style="color:var(--das-color);">${escapeHtml(d.q.answer)}</strong>`}</div>
-              <div style="font-size:0.88rem; margin-top:5px; color:var(--text-muted);">💡 ${escapeHtml(d.q.explanation)}</div>
+              <div style="font-size:0.9rem;">إجابتك: <strong>${renderValueSpan(d.userAns)}</strong> ${d.ok ? "" : `| الإجابة الصح: <strong style="color:var(--das-color);">${renderValueSpan(d.q.answer)}</strong>`}</div>
+              <div style="font-size:0.88rem; margin-top:5px; color:var(--text-muted);">💡 ${formatBidiText(d.q.explanation)}</div>
             </div>
           `).join("")}
       </div>
@@ -1592,7 +1617,7 @@ function renderQuizQuestion() {
       ${speakBtnHtml(q.speak)}
     </div>
     <div id="quizOptions">
-      ${q.options.map((opt) => `<button type="button" class="quiz-option" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join("")}
+      ${q.options.map((opt) => `<button type="button" class="quiz-option" data-opt="${escapeHtml(opt)}">${renderValueSpan(opt)}</button>`).join("")}
     </div>
     <div id="quizNextWrap" style="margin-top:10px; display:none;">
       <button type="button" class="btn btn-primary" id="quizNextBtn">السؤال اللي بعده ➡️</button>

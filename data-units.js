@@ -198,7 +198,7 @@ const UNITS_DATA = {
         bullets: [
           "<strong>Anna (آنا):</strong> لسه جديدة في الشقة وجاية من برلين (kommt aus Berlin).",
           "<strong>Bea (بيا) و Luca (لوكا) و Max (ماكس):</strong> ساكنين مع بعض في ميونخ (wohnen in München).",
-          "<strong>Bea:</strong> أصلها من هانوفر (kommt aus Hannover) ورقم موبايلها 0154-76895321.",
+          "<strong>Bea:</strong> أصلها من هانوفر (<span class=\"de\">kommt aus Hannover</span>) ورقم موبايلها <span class=\"de\" dir=\"ltr\">0154-76895321</span>.",
           "<strong>Luca:</strong> من ميونخ (kommt aus München).",
           "<strong>Max:</strong> مكنش موجود في الشقة وقت وصول آنا عشان كان في الجامعة (er ist an der Uni)."
         ]

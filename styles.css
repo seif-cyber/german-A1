@@ -119,12 +119,14 @@ body {
   100% { transform: translate(35px, -30px) scale(1.12); }
 }
 
-.de {
+.de, .ltr-inline {
   font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
   direction: ltr;
   unicode-bidi: isolate;
   font-weight: 600;
 }
+
+.ltr-inline { font-family: inherit; font-weight: inherit; }
 
 .container {
   max-width: 1180px;
