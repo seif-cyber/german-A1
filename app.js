@@ -1696,11 +1696,9 @@ function markFlashcardAnswer(knewIt) {
     learnedSet.delete(key);
     saveLearned();
     renderVocabGrid();
-    if (fcDeck.length > 1) {
-      const [missed] = fcDeck.splice(fcIndex, 1);
-      const reinsertAt = Math.min(fcIndex + 3, fcDeck.length);
-      fcDeck.splice(reinsertAt, 0, missed);
-      if (fcIndex >= fcDeck.length) fcIndex = 0;
+    // نسيبها في قائمة اللي مش محفوظة وننتقل للكارت اللي بعده عادي بدون إعادة
+    if (fcDeck.length > 0) {
+      fcIndex = (fcIndex + 1) % fcDeck.length;
     }
   }
   renderFlashcard(true);
