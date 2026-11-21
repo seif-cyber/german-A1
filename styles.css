@@ -750,8 +750,13 @@ tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(200, 16, 46, 0.03); }
 .hl-red { color: var(--primary); font-weight: 800; }
 
+/* جداول تركيب الجملة الألمانية (W-Frage / Aussagesatz / Ja-Nein-Frage) لازم تكون LTR عشان الجملة تتقري صح */
+table.ltr-table { direction: ltr; }
+table.ltr-table th, table.ltr-table td { text-align: left; }
+table.ltr-table th { direction: rtl; text-align: left; }
+
 /* ==================== الأبجدية والأرقام ومحوّل الأرقام ==================== */
-.alpha-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 10px; margin: 14px 0; }
+.alpha-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 10px; margin: 14px 0; direction: ltr; }
 .alpha-tile {
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -762,12 +767,12 @@ tr:hover td { background: rgba(200, 16, 46, 0.03); }
   transition: all 0.22s var(--ease-spring);
 }
 .alpha-tile:hover { border-color: var(--primary); transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-sm); }
-.alpha-letter { font-family: "Plus Jakarta Sans", sans-serif; font-size: 1.38rem; font-weight: 800; color: var(--primary); }
-.alpha-name { font-family: "Plus Jakarta Sans", sans-serif; font-size: 0.82rem; color: var(--text-muted); }
-.alpha-eg { font-size: 0.9rem; font-weight: 700; margin-top: 2px; }
-.alpha-tip { font-size: 0.74rem; color: var(--text-muted); line-height: 1.35; margin-top: 3px; }
+.alpha-letter { font-family: "Plus Jakarta Sans", sans-serif; font-size: 1.38rem; font-weight: 800; color: var(--primary); direction: ltr; }
+.alpha-name { font-family: "Plus Jakarta Sans", sans-serif; font-size: 0.82rem; color: var(--text-muted); direction: ltr; }
+.alpha-eg { font-size: 0.9rem; font-weight: 700; margin-top: 2px; direction: rtl; }
+.alpha-tip { font-size: 0.74rem; color: var(--text-muted); line-height: 1.35; margin-top: 3px; direction: rtl; }
 
-.num-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; margin: 14px 0; }
+.num-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; margin: 14px 0; direction: ltr; }
 .num-tile {
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -778,9 +783,9 @@ tr:hover td { background: rgba(200, 16, 46, 0.03); }
   transition: all 0.22s var(--ease-spring);
 }
 .num-tile:hover { border-color: var(--primary); transform: translateY(-3px) scale(1.03); box-shadow: var(--shadow-sm); }
-.num-digit { font-family: "Plus Jakarta Sans", sans-serif; font-size: 1.35rem; font-weight: 800; color: var(--primary); }
-.num-de { font-family: "Plus Jakarta Sans", sans-serif; font-size: 0.9rem; font-weight: 700; }
-.num-eg { font-size: 0.78rem; color: var(--text-muted); }
+.num-digit { font-family: "Plus Jakarta Sans", sans-serif; font-size: 1.35rem; font-weight: 800; color: var(--primary); direction: ltr; }
+.num-de { font-family: "Plus Jakarta Sans", sans-serif; font-size: 0.9rem; font-weight: 700; direction: ltr; }
+.num-eg { font-size: 0.78rem; color: var(--text-muted); direction: rtl; }
 
 .converter-box {
   background: var(--surface-2);

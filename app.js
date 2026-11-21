@@ -449,7 +449,7 @@ function renderGrammarU1() {
       <div class="compare-box">
         <h4>📌 1. سؤال أداة الاستفهام (W-Frage) — الفعل رقم 2</h4>
         <div class="table-wrap">
-          <table>
+          <table class="ltr-table" dir="ltr">
             <thead><tr><th>1. أداة الاستفهام</th><th>2. الفعل</th><th>3. باقي الجملة</th></tr></thead>
             <tbody>
               <tr><td class="de">Wer</td><td class="de hl-red">bist</td><td class="de">du?</td></tr>
@@ -464,7 +464,7 @@ function renderGrammarU1() {
       <div class="compare-box">
         <h4>📌 2. الجملة الخبرية (Aussagesatz) — الفعل رقم 2</h4>
         <div class="table-wrap">
-          <table>
+          <table class="ltr-table" dir="ltr">
             <thead><tr><th>1. الفاعل</th><th>2. الفعل</th><th>3. باقي الجملة</th></tr></thead>
             <tbody>
               <tr><td class="de">Ich</td><td class="de hl-red">bin</td><td class="de">Julia.</td></tr>
@@ -647,7 +647,7 @@ function renderGrammarU2() {
         <h4>📌 2. سؤال هل (Ja-/Nein-Frage)</h4>
         <p style="margin-top:0;">مفيش أداة استفهام! بنحط <strong>الفعل رقم (1)</strong> في أول الجملة مباشرة:</p>
         <div class="table-wrap">
-          <table>
+          <table class="ltr-table" dir="ltr">
             <thead><tr><th>1. الفعل</th><th>2. الفاعل</th><th>3. باقي الجملة</th></tr></thead>
             <tbody>
               <tr><td class="de hl-red">Gehen</td><td class="de">wir</td><td class="de">ins Kino?</td></tr>
@@ -690,13 +690,15 @@ function renderU2NumbersConverter() {
       <strong>🧮 محوّل الأرقام الألماني التفاعلي (جرّب بنفسك!)</strong>
       <div style="font-size:0.88rem; color:var(--text-muted);">اكتب أي رقم من 0 لـ 999,999 وهيتكتبلك ويتنطقلك بالألماني فوراً:</div>
       <div class="converter-row">
-        <input type="number" id="numConvInput" class="input-field" min="0" max="999999" value="45" style="width:180px; font-weight:800;" />
+        <input type="number" id="numConvInput" class="input-field de" dir="ltr" min="0" max="999999" value="45" style="width:180px; font-weight:800;" />
         <button type="button" class="btn btn-primary" id="numConvSpeak">🔊 اسمع الرقم</button>
-        <button type="button" class="btn btn-secondary" data-preset="21">21</button>
-        <button type="button" class="btn btn-secondary" data-preset="45">45</button>
-        <button type="button" class="btn btn-secondary" data-preset="480">480</button>
-        <button type="button" class="btn btn-secondary" data-preset="1250">1250</button>
-        <button type="button" class="btn btn-secondary" data-preset="68000">68000</button>
+        <div style="display:inline-flex; gap:8px; flex-wrap:wrap; direction:ltr;">
+          <button type="button" class="btn btn-secondary" data-preset="21">21</button>
+          <button type="button" class="btn btn-secondary" data-preset="45">45</button>
+          <button type="button" class="btn btn-secondary" data-preset="480">480</button>
+          <button type="button" class="btn btn-secondary" data-preset="1250">1250</button>
+          <button type="button" class="btn btn-secondary" data-preset="68000">68000</button>
+        </div>
       </div>
       <div class="converter-output" id="numConvOut">fünfundvierzig</div>
     </div>
